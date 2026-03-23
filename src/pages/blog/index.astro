@@ -25,9 +25,20 @@ import swiperUrl from '../../scripts/vendor/swiper/swiper-bundle.min.js?url';
 /* Main JS File */
 import mainUrl from '../../scripts/js/main.js?url';
 
-const posts = (await getCollection('blog'))
+const PAGE_SIZE = 5;
+
+const currentPage = Number(Astro.url.searchParams.get('page') || 1);
+
+const allPosts = (await getCollection('blog'))
   .filter((post) => !post.data.draft)
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const totalPages = Math.ceil(allPosts.length / PAGE_SIZE);
+
+const posts = allPosts.slice(
+  (currentPage - 1) * PAGE_SIZE,
+  currentPage * PAGE_SIZE
+);
 ---
 
 <html lang="ko">
@@ -261,24 +272,45 @@ const posts = (await getCollection('blog'))
           </section><!-- /Blog Posts Section -->
 
           <!-- Blog Pagination Section -->
-          <section id="blog-pagination" class="blog-pagination section">
+          <div class="container">
+    <div class="d-flex justify-content-center">
+      <ul>
 
-            <div class="container">
-              <div class="d-flex justify-content-center">
-                <ul>
-                  <li><a href="#"><i class="bi bi-chevron-left"></i></a></li>
-                  <li><a href="#">1</a></li>
-                  <li><a href="#" class="active">2</a></li>
-                  <li><a href="#">3</a></li>
-                  <li><a href="#">4</a></li>
-                  <li>...</li>
-                  <li><a href="#">10</a></li>
-                  <li><a href="#"><i class="bi bi-chevron-right"></i></a></li>
-                </ul>
-              </div>
-            </div>
+        <!-- 이전 버튼 -->
+        {currentPage > 1 && (
+          <li>
+            <a href={`/blog/page/${currentPage - 1}`}>
+              <i class="bi bi-chevron-left"></i>
+            </a>
+          </li>
+        )}
 
-          </section><!-- /Blog Pagination Section -->
+        <!-- 페이지 번호 -->
+        {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+          <li>
+            <a
+              href={`/blog/page/${pageNum}`}
+              class={pageNum === currentPage ? 'active' : ''}
+            >
+              {pageNum}
+            </a>
+          </li>
+        ))}
+
+        <!-- 다음 버튼 -->
+        {currentPage < totalPages && (
+          <li>
+            <a href={`/blog/page/${currentPage + 1}`}>
+              <i class="bi bi-chevron-right"></i>
+            </a>
+          </li>
+        )}
+
+      </ul>
+    </div>
+  </div>
+
+</section><!-- /Blog Pagination Section -->
 
         </div>
 
