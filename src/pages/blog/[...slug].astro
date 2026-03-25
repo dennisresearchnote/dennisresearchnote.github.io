@@ -1,27 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';
-
-/* Vendor CSS Files */
-import '../../styles/vendor/bootstrap/css/bootstrap.min.css';
-import '../../styles/vendor/bootstrap-icons/bootstrap-icons.css';
-import '../../styles/vendor/aos/aos.css';
-import '../../styles/vendor/swiper/swiper-bundle.min.css';
-
-/* Main CSS File */
-import '../../styles/css/main.css';
-
-/* Vendor JS Files */
-import bootstrapUrl from '../../scripts/vendor/bootstrap/js/bootstrap.bundle.min.js?url';
-import validateUrl from '../../scripts/vendor/php-email-form/validate.js?url';
-import aosUrl from '../../scripts/vendor/aos/aos.js?url';
-import imagesloadedUrl from '../../scripts/vendor/imagesloaded/imagesloaded.pkgd.min.js?url';
-import isotopeUrl from '../../scripts/vendor/isotope-layout/isotope.pkgd.min.js?url';
-import purecounterUrl from '../../scripts/vendor/purecounter/purecounter_vanilla.js?url';
-import waypointsUrl from '../../scripts/vendor/waypoints/noframework.waypoints.js?url';
-import swiperUrl from '../../scripts/vendor/swiper/swiper-bundle.min.js?url';
-
-/* Main JS File */
-import mainUrl from '../../scripts/js/main.js?url';
+import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const slugify = (value: string) =>
   value
@@ -37,44 +16,10 @@ const posts = (await getCollection('blog'))
 const getCategoryPathParts = (post: (typeof posts)[number]) =>
   (post.data.category ?? []).map(slugify);
 
-const getPostPathParts = (post: (typeof posts)[number]) => [
-  ...getCategoryPathParts(post),
-  post.slug,
-];
-
-const getPostUrl = (post: (typeof posts)[number]) =>
-  `/blog/${getPostPathParts(post).join('/')}`;
-
-const navTree = new Map<string, Set<string>>();
-
-for (const post of posts) {
-  const categories = post.data.category ?? [];
-  const major = categories[0]?.trim();
-  const middle = categories[1]?.trim();
-
-  if (!major) continue;
-
-  if (!navTree.has(major)) {
-    navTree.set(major, new Set());
-  }
-
-  if (middle) {
-    navTree.get(major)?.add(middle);
-  }
-}
-
-const navItems = [...navTree.entries()]
-  .sort(([a], [b]) => a.localeCompare(b, 'ko-KR'))
-  .map(([major, middleSet]) => ({
-    major,
-    majorSlug: slugify(major),
-    middles: [...middleSet]
-      .sort((a, b) => a.localeCompare(b, 'ko-KR'))
-      .map((middle) => ({
-        name: middle,
-        slug: slugify(middle),
-      })),
-  }));
+const getPostUrl = (post: (typeof posts)[number]) => {
+  const categoryPath = getCategoryPathParts(post).join('/');
+  return categoryPath ? `/blog/${categoryPath}/${post.slug}` : `/blog/${post.slug}`;
+};
 
 export async function getStaticPaths() {
   const slugify = (value: string) =>
@@ -98,6 +43,7 @@ export async function getStaticPaths() {
     for (let i = 1; i <= categoryParts.length; i++) {
       const slugPath = categoryParts.slice(0, i).join('/');
       const labelPath = originalCategories.slice(0, i);
+
       if (slugPath && !categoryPathMap.has(slugPath)) {
         categoryPathMap.set(slugPath, labelPath);
       }
@@ -158,217 +104,149 @@ if (routeType === 'post') {
 }
 ---
 
-<html lang="ko">
-  <head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>{pageTitle} | Dennis Research Note</title>
-    <meta
-      name="description"
-      content={
-        routeType === 'post'
-          ? post?.data.description ?? ''
-          : `${pageTitle} 분류 글 목록`
-      }
-    />
+<BaseLayout>
+  <main class="main">
+    <div class="page-title light-background">
+      <div class="container d-lg-flex justify-content-between align-items-center">
+        <h1 class="mb-2 mb-lg-0">{pageTitle}</h1>
 
-    <link href="/assets/img/favicon.png" rel="icon" />
-    <link href="/assets/img/apple-touch-icon.png" rel="apple-touch-icon" />
-
-    <link href="https://fonts.googleapis.com" rel="preconnect" />
-    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet" />
-  </head>
-
-  <body class="blog-page">
-    <header id="header" class="header d-flex align-items-center sticky-top">
-      <div class="container-fluid container-xl position-relative d-flex align-items-center">
-        <a href="/" class="logo d-flex align-items-center me-auto">
-          <h1 class="sitename">Dennis Research Note</h1>
-        </a>
-
-        <nav id="navmenu" class="navmenu">
-          <ul>
+        <nav class="breadcrumbs">
+          <ol>
             <li><a href="/">Home</a></li>
-            <li><a href="/blog" class={routeType === 'post' || routeType === 'category' ? 'active' : undefined}>Blog</a></li>
+            <li><a href="/blog">Blog</a></li>
 
-            {navItems.map((item) => {
-              const isActiveMajor = currentPath[0] === item.majorSlug;
-              return (
-                <li class={item.middles.length > 0 ? 'dropdown' : undefined}>
-                  <a href={`/blog/${item.majorSlug}`} class={isActiveMajor ? 'active' : undefined}>
-                    <span>{item.major}</span>
-                    {item.middles.length > 0 && <i class="bi bi-chevron-down toggle-dropdown"></i>}
-                  </a>
+            {routeType === 'category' &&
+              categoryLabels.map((label, index) => {
+                const href = `/blog/${currentPath.slice(0, index + 1).join('/')}`;
+                const isLast = index === categoryLabels.length - 1;
 
-                  {item.middles.length > 0 && (
-                    <ul>
-                      {item.middles.map((middle) => (
-                        <li>
-                          <a
-                            href={`/blog/${item.majorSlug}/${middle.slug}`}
-                            class={currentPath[1] === middle.slug ? 'active' : undefined}
-                          >
-                            {middle.name}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-          <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+                return isLast ? (
+                  <li class="current">{label}</li>
+                ) : (
+                  <li><a href={href}>{label}</a></li>
+                );
+              })}
+
+            {routeType === 'post' && post && (
+              <>
+                {categoryLabels.map((label, index) => (
+                  <li>
+                    <a href={`/blog/${currentPath.slice(0, index + 1).join('/')}`}>{label}</a>
+                  </li>
+                ))}
+                <li class="current">{post.data.title}</li>
+              </>
+            )}
+          </ol>
         </nav>
       </div>
-    </header>
+    </div>
 
-    <main class="main">
-      <div class="page-title light-background">
-        <div class="container d-lg-flex justify-content-between align-items-center">
-          <h1 class="mb-2 mb-lg-0">{pageTitle}</h1>
+    {routeType === 'category' && (
+      <div class="container">
+        <div class="row gy-4">
+          {filteredPosts.map((entry) => (
+            <div class="col-lg-12">
+              <article>
+                <div class="post-img">
+                  <img
+                    src={entry.data.thumbnail ?? '/images/test-thumbnail.png'}
+                    alt={entry.data.title}
+                    class="img-fluid"
+                  />
+                </div>
 
-          <nav class="breadcrumbs">
-            <ol>
-              <li><a href="/">Home</a></li>
-              <li><a href="/blog">Blog</a></li>
+                <h2 class="title">
+                  <a href={getPostUrl(entry)}>{entry.data.title}</a>
+                </h2>
 
-              {routeType === 'category' &&
-                categoryLabels.map((label, index) => {
-                  const href = `/blog/${currentPath.slice(0, index + 1).join('/')}`;
-                  const isLast = index === categoryLabels.length - 1;
-
-                  return isLast ? (
-                    <li class="current">{label}</li>
-                  ) : (
-                    <li><a href={href}>{label}</a></li>
-                  );
-                })}
-
-              {routeType === 'post' && post && (
-                <>
-                  {categoryLabels.map((label, index) => (
-                    <li>
-                      <a href={`/blog/${currentPath.slice(0, index + 1).join('/')}`}>{label}</a>
+                <div class="meta-top">
+                  <ul>
+                    <li class="d-flex align-items-center">
+                      <i class="bi bi-person"></i>
+                      <a href={getPostUrl(entry)}>{entry.data.author ?? 'Dennis'}</a>
                     </li>
-                  ))}
-                  <li class="current">{post.data.title}</li>
-                </>
-              )}
-            </ol>
-          </nav>
+                    <li class="d-flex align-items-center">
+                      <i class="bi bi-clock"></i>
+                      <a href={getPostUrl(entry)}>
+                        <time datetime={entry.data.pubDate.toISOString()}>
+                          {entry.data.pubDate.toLocaleDateString('ko-KR')}
+                        </time>
+                      </a>
+                    </li>
+                    {(entry.data.category?.length ?? 0) > 0 && (
+                      <li class="d-flex align-items-center">
+                        <i class="bi bi-folder"></i>
+                        <span>{entry.data.category?.join(' / ')}</span>
+                      </li>
+                    )}
+                  </ul>
+                </div>
+
+                <div class="content">
+                  <p>{entry.data.description}</p>
+                  <div class="read-more">
+                    <a href={getPostUrl(entry)}>Read More</a>
+                  </div>
+                </div>
+              </article>
+            </div>
+          ))}
+
+          {filteredPosts.length === 0 && (
+            <div class="col-lg-12">
+              <article>
+                <div class="content">
+                  <p>이 분류에 해당하는 게시물이 없습니다.</p>
+                </div>
+              </article>
+            </div>
+          )}
         </div>
       </div>
+    )}
 
-      {routeType === 'category' && (
+    {routeType === 'post' && post && Content && (
+      <section id="blog-details" class="blog-details section">
         <div class="container">
-          <div class="row gy-4">
-            {filteredPosts.map((entry) => (
-              <div class="col-lg-12">
-                <article>
-                  <div class="post-img">
-                    <img src={entry.data.thumbnail ?? '/images/test-thumbnail.png'} alt={entry.data.title} class="img-fluid" />
-                  </div>
+          <article class="article">
+            <div class="post-img">
+              <img
+                src={post.data.thumbnail ?? '/images/test-thumbnail.png'}
+                alt={post.data.title}
+                class="img-fluid"
+              />
+            </div>
 
-                  <h2 class="title">
-                    <a href={getPostUrl(entry)}>{entry.data.title}</a>
-                  </h2>
+            <h2 class="title">{post.data.title}</h2>
 
-                  <div class="meta-top">
-                    <ul>
-                      <li class="d-flex align-items-center">
-                        <i class="bi bi-person"></i>
-                        <a href={getPostUrl(entry)}>{entry.data.author ?? 'Dennis'}</a>
-                      </li>
-                      <li class="d-flex align-items-center">
-                        <i class="bi bi-clock"></i>
-                        <a href={getPostUrl(entry)}>
-                          <time datetime={entry.data.pubDate.toISOString()}>
-                            {entry.data.pubDate.toLocaleDateString('ko-KR')}
-                          </time>
-                        </a>
-                      </li>
-                      {(entry.data.category?.length ?? 0) > 0 && (
-                        <li class="d-flex align-items-center">
-                          <i class="bi bi-folder"></i>
-                          <span>{entry.data.category?.join(' / ')}</span>
-                        </li>
-                      )}
-                    </ul>
-                  </div>
+            <div class="meta-top">
+              <ul>
+                <li class="d-flex align-items-center">
+                  <i class="bi bi-person"></i>
+                  <span>{post.data.author ?? 'Dennis'}</span>
+                </li>
+                <li class="d-flex align-items-center">
+                  <i class="bi bi-clock"></i>
+                  <time datetime={post.data.pubDate.toISOString()}>
+                    {post.data.pubDate.toLocaleDateString('ko-KR')}
+                  </time>
+                </li>
+                {(post.data.category?.length ?? 0) > 0 && (
+                  <li class="d-flex align-items-center">
+                    <i class="bi bi-folder"></i>
+                    <span>{post.data.category?.join(' / ')}</span>
+                  </li>
+                )}
+              </ul>
+            </div>
 
-                  <div class="content">
-                    <p>{entry.data.description}</p>
-                    <div class="read-more">
-                      <a href={getPostUrl(entry)}>Read More</a>
-                    </div>
-                  </div>
-                </article>
-              </div>
-            ))}
-
-            {filteredPosts.length === 0 && (
-              <div class="col-lg-12">
-                <article>
-                  <div class="content">
-                    <p>이 분류에 해당하는 게시물이 없습니다.</p>
-                  </div>
-                </article>
-              </div>
-            )}
-          </div>
+            <div class="content">
+              <Content />
+            </div>
+          </article>
         </div>
-      )}
-
-      {routeType === 'post' && post && Content && (
-        <section id="blog-details" class="blog-details section">
-          <div class="container">
-            <article class="article">
-              <div class="post-img">
-                <img src={post.data.thumbnail ?? '/images/test-thumbnail.png'} alt={post.data.title} class="img-fluid" />
-              </div>
-
-              <h2 class="title">{post.data.title}</h2>
-
-              <div class="meta-top">
-                <ul>
-                  <li class="d-flex align-items-center">
-                    <i class="bi bi-person"></i>
-                    <span>{post.data.author ?? 'Dennis'}</span>
-                  </li>
-                  <li class="d-flex align-items-center">
-                    <i class="bi bi-clock"></i>
-                    <time datetime={post.data.pubDate.toISOString()}>
-                      {post.data.pubDate.toLocaleDateString('ko-KR')}
-                    </time>
-                  </li>
-                  {(post.data.category?.length ?? 0) > 0 && (
-                    <li class="d-flex align-items-center">
-                      <i class="bi bi-folder"></i>
-                      <span>{post.data.category?.join(' / ')}</span>
-                    </li>
-                  )}
-                </ul>
-              </div>
-
-              <div class="content">
-                <Content />
-              </div>
-            </article>
-          </div>
-        </section>
-      )}
-    </main>
-
-    <script type="module" src={bootstrapUrl}></script>
-    <script type="module" src={validateUrl}></script>
-    <script type="module" src={aosUrl}></script>
-    <script type="module" src={imagesloadedUrl}></script>
-    <script type="module" src={isotopeUrl}></script>
-    <script type="module" src={purecounterUrl}></script>
-    <script type="module" src={waypointsUrl}></script>
-    <script type="module" src={swiperUrl}></script>
-    <script type="module" src={mainUrl}></script>
-  </body>
-</html>
+      </section>
+    )}
+  </main>
+</BaseLayout>
