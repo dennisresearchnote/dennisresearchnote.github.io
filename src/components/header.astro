@@ -3,15 +3,15 @@ import { getCollection } from 'astro:content';
 
 const posts = (await getCollection('blog')).filter((post) => !post.data.draft);
 
-// 대분류별 중분류 묶기
 const categoryMap = posts.reduce((acc, post) => {
-  const major = post.data.category?.major;
-  const middle = post.data.category?.middle;
+  const categories = post.data.category ?? [];
+  const major = categories[0]?.trim();
+  const middle = categories[1]?.trim();
 
   if (!major) return acc;
 
   if (!acc[major]) {
-    acc[major] = new Set();
+    acc[major] = new Set<string>();
   }
 
   if (middle) {
@@ -21,12 +21,11 @@ const categoryMap = posts.reduce((acc, post) => {
   return acc;
 }, {} as Record<string, Set<string>>);
 
-// 정렬된 형태로 변환
-const categories = Object.entries(categoryMap)
-  .sort(([a], [b]) => a.localeCompare(b))
+const navItems = Object.entries(categoryMap)
+  .sort(([a], [b]) => a.localeCompare(b, 'ko-KR'))
   .map(([major, middleSet]) => ({
     major,
-    middles: [...middleSet].sort((a, b) => a.localeCompare(b)),
+    middles: [...middleSet].sort((a, b) => a.localeCompare(b, 'ko-KR')),
   }));
 ---
 
@@ -34,28 +33,25 @@ const categories = Object.entries(categoryMap)
   <div class="container-fluid container-xl position-relative d-flex align-items-center">
 
     <a href="/" class="logo d-flex align-items-center me-auto">
-      <h1 class="sitename">Dennis Research Note</h1>
+      <h1 class="sitename">DENNIS RESEARCH NOTE</h1>
     </a>
 
     <nav id="navmenu" class="navmenu">
       <ul>
         <li><a href="/" class={Astro.url.pathname === '/' ? 'active' : ''}>Home</a></li>
-        <li><a href="/about">About</a></li>
 
-        {categories.map((category) => (
-          <li class="dropdown">
-            <a href={`/blog?major=${encodeURIComponent(category.major)}`}>
-              <span>{category.major}</span>
-              {category.middles.length > 0 && (
-                <i class="bi bi-chevron-down toggle-dropdown"></i>
-              )}
+        {navItems.map((item) => (
+          <li class={item.middles.length > 0 ? 'dropdown' : undefined}>
+            <a href={`/blog/${encodeURIComponent(item.major.toLowerCase())}`}>
+              <span>{item.major}</span>
+              {item.middles.length > 0 && <i class="bi bi-chevron-down toggle-dropdown"></i>}
             </a>
 
-            {category.middles.length > 0 && (
+            {item.middles.length > 0 && (
               <ul>
-                {category.middles.map((middle) => (
+                {item.middles.map((middle) => (
                   <li>
-                    <a href={`/blog?major=${encodeURIComponent(category.major)}&middle=${encodeURIComponent(middle)}`}>
+                    <a href={`/blog/${encodeURIComponent(item.major.toLowerCase())}/${encodeURIComponent(middle.toLowerCase())}`}>
                       {middle}
                     </a>
                   </li>
@@ -65,6 +61,7 @@ const categories = Object.entries(categoryMap)
           </li>
         ))}
 
+        <li><a href="/about">About</a></li>
         <li><a href="/contact">Contact</a></li>
       </ul>
 
