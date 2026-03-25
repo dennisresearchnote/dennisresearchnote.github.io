@@ -8,7 +8,7 @@ draft: false
 
 category:
   - Security
-  - Malware
+  - Hacking
   - Windows
 
 tags:
