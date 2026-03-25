@@ -1,27 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 
-/* Vendor CSS Files */
-import '../../styles/vendor/bootstrap/css/bootstrap.min.css';
-import '../../styles/vendor/bootstrap-icons/bootstrap-icons.css';
-import '../../styles/vendor/aos/aos.css';
-import '../../styles/vendor/swiper/swiper-bundle.min.css';
-
-/* Main CSS File */
-import '../../styles/css/main.css';
-
-/* Vendor JS Files */
-import bootstrapUrl from '../../scripts/vendor/bootstrap/js/bootstrap.bundle.min.js?url';
-import validateUrl from '../../scripts/vendor/php-email-form/validate.js?url';
-import aosUrl from '../../scripts/vendor/aos/aos.js?url';
-import imagesloadedUrl from '../../scripts/vendor/imagesloaded/imagesloaded.pkgd.min.js?url';
-import isotopeUrl from '../../scripts/vendor/isotope-layout/isotope.pkgd.min.js?url';
-import purecounterUrl from '../../scripts/vendor/purecounter/purecounter_vanilla.js?url';
-import waypointsUrl from '../../scripts/vendor/waypoints/noframework.waypoints.js?url';
-import swiperUrl from '../../scripts/vendor/swiper/swiper-bundle.min.js?url';
-
-/* Main JS File */
-import mainUrl from '../../scripts/js/main.js?url';
+import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const PAGE_SIZE = 5;
 
@@ -87,58 +67,7 @@ const posts = allPosts.slice(
   safeCurrentPage * PAGE_SIZE
 );
 ---
-
-<html lang="ko">
-  <head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Blog | Dennis Research Note</title>
-    <meta name="description" content="보안 연구 블로그 글 목록" />
-    <meta name="keywords" content="security, malware, dfir, blog" />
-
-    <link href="/assets/img/favicon.png" rel="icon" />
-    <link href="/assets/img/apple-touch-icon.png" rel="apple-touch-icon" />
-
-    <link href="https://fonts.googleapis.com" rel="preconnect" />
-    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet" />
-  </head>
-
-  <body class="blog-page">
-    <header id="header" class="header d-flex align-items-center sticky-top">
-      <div class="container-fluid container-xl position-relative d-flex align-items-center">
-        <a href="/" class="logo d-flex align-items-center me-auto">
-          <h1 class="sitename">Dennis Research Note</h1>
-        </a>
-
-        <nav id="navmenu" class="navmenu">
-          <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/blog" class="active">Blog</a></li>
-
-            {navItems.map((item) => (
-              <li class={item.middles.length > 0 ? 'dropdown' : undefined}>
-                <a href={`/blog/${item.majorSlug}`}>
-                  <span>{item.major}</span>
-                  {item.middles.length > 0 && <i class="bi bi-chevron-down toggle-dropdown"></i>}
-                </a>
-                {item.middles.length > 0 && (
-                  <ul>
-                    {item.middles.map((middle) => (
-                      <li>
-                        <a href={`/blog/${item.majorSlug}/${middle.slug}`}>{middle.name}</a>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </li>
-            ))}
-          </ul>
-          <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
-        </nav>
-      </div>
-    </header>
-
+  <BaseLayout bodyClass="blog-page">
     <main class="main">
       <div class="page-title light-background">
         <div class="container d-lg-flex justify-content-between align-items-center">
@@ -276,15 +205,4 @@ const posts = allPosts.slice(
         </div>
       </div>
     </main>
-
-    <script type="module" src={bootstrapUrl}></script>
-    <script type="module" src={validateUrl}></script>
-    <script type="module" src={aosUrl}></script>
-    <script type="module" src={imagesloadedUrl}></script>
-    <script type="module" src={isotopeUrl}></script>
-    <script type="module" src={purecounterUrl}></script>
-    <script type="module" src={waypointsUrl}></script>
-    <script type="module" src={swiperUrl}></script>
-    <script type="module" src={mainUrl}></script>
-  </body>
-</html>
+  </BaseLayout>
