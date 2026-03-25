@@ -1,34 +1,33 @@
 ---
 import { getCollection } from 'astro:content';
 
-const posts = (await getCollection('blog'))
-  .filter((post) => !post.data.draft);
+const posts = (await getCollection('blog')).filter((post) => !post.data.draft);
 
-// 대분류 목록
-const majorCategories = [
-  ...new Set(
-    posts
-      .map((post) => post.data.category?.major)
-      .filter(Boolean)
-  ),
-].sort();
+// 대분류별 중분류 묶기
+const categoryMap = posts.reduce((acc, post) => {
+  const major = post.data.category?.major;
+  const middle = post.data.category?.middle;
 
-// 대분류별 중분류 목록
-const categoryMap = majorCategories.map((major) => {
-  const middleCategories = [
-    ...new Set(
-      posts
-        .filter((post) => post.data.category?.major === major)
-        .map((post) => post.data.category?.middle)
-        .filter(Boolean)
-    ),
-  ].sort();
+  if (!major) return acc;
 
-  return {
+  if (!acc[major]) {
+    acc[major] = new Set();
+  }
+
+  if (middle) {
+    acc[major].add(middle);
+  }
+
+  return acc;
+}, {} as Record<string, Set<string>>);
+
+// 정렬된 형태로 변환
+const categories = Object.entries(categoryMap)
+  .sort(([a], [b]) => a.localeCompare(b))
+  .map(([major, middleSet]) => ({
     major,
-    middleCategories,
-  };
-});
+    middles: [...middleSet].sort((a, b) => a.localeCompare(b)),
+  }));
 ---
 
 <header id="header" class="header d-flex align-items-center sticky-top">
@@ -43,55 +42,34 @@ const categoryMap = majorCategories.map((major) => {
         <li><a href="/" class={Astro.url.pathname === '/' ? 'active' : ''}>Home</a></li>
         <li><a href="/about">About</a></li>
 
-        <li class="dropdown">
-          <a href="/blog">
-            <span>Blog</span>
-            <i class="bi bi-chevron-down toggle-dropdown"></i>
-          </a>
+        {categories.map((category) => (
+          <li class="dropdown">
+            <a href={`/blog?major=${encodeURIComponent(category.major)}`}>
+              <span>{category.major}</span>
+              {category.middles.length > 0 && (
+                <i class="bi bi-chevron-down toggle-dropdown"></i>
+              )}
+            </a>
 
-          <ul>
-            <li><a href="/blog">전체 글</a></li>
-
-            {categoryMap.map((category) => (
-              <li class={category.middleCategories.length > 0 ? 'dropdown' : ''}>
-                <a href={`/blog?major=${encodeURIComponent(category.major!)}`}>
-                  <span>{category.major}</span>
-                  {category.middleCategories.length > 0 && (
-                    <i class="bi bi-chevron-down toggle-dropdown"></i>
-                  )}
-                </a>
-
-                {category.middleCategories.length > 0 && (
-                  <ul>
-                    <li>
-                      <a href={`/blog?major=${encodeURIComponent(category.major!)}`}>
-                        전체
-                      </a>
-                    </li>
-
-                    {category.middleCategories.map((middle) => (
-                      <li>
-                        <a
-                          href={`/blog?major=${encodeURIComponent(category.major!)}&middle=${encodeURIComponent(middle!)}`}
-                        >
-                          {middle}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </li>
-            ))}
-          </ul>
-        </li>
+            {category.middles.length > 0 && (
+              <ul>
+                {category.middles.map((middle) => (
+                  <li>
+                    <a href={`/blog?major=${encodeURIComponent(category.major)}&middle=${encodeURIComponent(middle)}`}>
+                      {middle}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))}
 
         <li><a href="/contact">Contact</a></li>
       </ul>
 
       <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
     </nav>
-
-    <a class="btn-getstarted" href="/about">Get Started</a>
 
   </div>
 </header>
