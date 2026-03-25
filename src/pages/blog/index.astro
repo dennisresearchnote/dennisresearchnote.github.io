@@ -5,7 +5,6 @@ import { getCollection } from 'astro:content';
 import '../../styles/vendor/bootstrap/css/bootstrap.min.css';
 import '../../styles/vendor/bootstrap-icons/bootstrap-icons.css';
 import '../../styles/vendor/aos/aos.css';
-import '../../styles/vendor/glightbox/css/glightbox.min.css';
 import '../../styles/vendor/swiper/swiper-bundle.min.css';
 
 /* Main CSS File */
@@ -15,7 +14,6 @@ import '../../styles/css/main.css';
 import bootstrapUrl from '../../scripts/vendor/bootstrap/js/bootstrap.bundle.min.js?url';
 import validateUrl from '../../scripts/vendor/php-email-form/validate.js?url';
 import aosUrl from '../../scripts/vendor/aos/aos.js?url';
-import glightboxUrl from '../../scripts/vendor/glightbox/js/glightbox.min.js?url';
 import imagesloadedUrl from '../../scripts/vendor/imagesloaded/imagesloaded.pkgd.min.js?url';
 import isotopeUrl from '../../scripts/vendor/isotope-layout/isotope.pkgd.min.js?url';
 import purecounterUrl from '../../scripts/vendor/purecounter/purecounter_vanilla.js?url';
@@ -27,484 +25,266 @@ import mainUrl from '../../scripts/js/main.js?url';
 
 const PAGE_SIZE = 5;
 
-const currentPage = Number(Astro.url.searchParams.get('page') || 1);
+const slugify = (value: string) =>
+  value
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^\p{L}\p{N}-]+/gu, '');
+
+const normalizePage = (value: string | null) => {
+  const parsed = Number(value || 1);
+  return Number.isFinite(parsed) && parsed > 0 ? Math.floor(parsed) : 1;
+};
+
+const getPostUrl = (post: Awaited<ReturnType<typeof getCollection<'blog'>>>[number]) => {
+  const categoryPath = (post.data.category ?? []).map(slugify).join('/');
+  return categoryPath ? `/blog/${categoryPath}/${post.slug}` : `/blog/${post.slug}`;
+};
+
+const currentPage = normalizePage(Astro.url.searchParams.get('page'));
 
 const allPosts = (await getCollection('blog'))
   .filter((post) => !post.data.draft)
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
-const totalPages = Math.ceil(allPosts.length / PAGE_SIZE);
+const navTree = new Map<string, Set<string>>();
+
+for (const post of allPosts) {
+  const categories = post.data.category ?? [];
+  const major = categories[0]?.trim();
+  const middle = categories[1]?.trim();
+
+  if (!major) continue;
+
+  if (!navTree.has(major)) {
+    navTree.set(major, new Set());
+  }
+
+  if (middle) {
+    navTree.get(major)?.add(middle);
+  }
+}
+
+const navItems = [...navTree.entries()]
+  .sort(([a], [b]) => a.localeCompare(b, 'ko-KR'))
+  .map(([major, middleSet]) => ({
+    major,
+    majorSlug: slugify(major),
+    middles: [...middleSet]
+      .sort((a, b) => a.localeCompare(b, 'ko-KR'))
+      .map((middle) => ({
+        name: middle,
+        slug: slugify(middle),
+      })),
+  }));
+
+const totalPages = Math.max(1, Math.ceil(allPosts.length / PAGE_SIZE));
+const safeCurrentPage = Math.min(currentPage, totalPages);
 
 const posts = allPosts.slice(
-  (currentPage - 1) * PAGE_SIZE,
-  currentPage * PAGE_SIZE
+  (safeCurrentPage - 1) * PAGE_SIZE,
+  safeCurrentPage * PAGE_SIZE
 );
 ---
 
 <html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Blog | Dennis Research Note</title>
+    <meta name="description" content="보안 연구 블로그 글 목록" />
+    <meta name="keywords" content="security, malware, dfir, blog" />
 
-<head>
-  <meta charset="utf-8">
-  <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  <title>Index - Sailor Bootstrap Template</title>
-  <meta name="description" content="">
-  <meta name="keywords" content="">
+    <link href="/assets/img/favicon.png" rel="icon" />
+    <link href="/assets/img/apple-touch-icon.png" rel="apple-touch-icon" />
 
-  <!-- Favicons -->
-  <link href="assets/img/favicon.png" rel="icon">
-  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet" />
+  </head>
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com" rel="preconnect">
-  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-</head>
+  <body class="blog-page">
+    <header id="header" class="header d-flex align-items-center sticky-top">
+      <div class="container-fluid container-xl position-relative d-flex align-items-center">
+        <a href="/" class="logo d-flex align-items-center me-auto">
+          <h1 class="sitename">Dennis Research Note</h1>
+        </a>
 
-<body class="blog-page">
+        <nav id="navmenu" class="navmenu">
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/blog" class="active">Blog</a></li>
 
-  <header id="header" class="header d-flex align-items-center sticky-top">
-    <div class="container-fluid container-xl position-relative d-flex align-items-center">
-
-      <a href="index.html" class="logo d-flex align-items-center me-auto">
-        <!-- Uncomment the line below if you also wish to use an image logo -->
-        <!-- <img src="assets/img/logo.png" alt=""> -->
-        <h1 class="sitename">Sailor</h1>
-      </a>
-
-      <nav id="navmenu" class="navmenu">
-        <ul>
-          <li><a href="#hero">Home</a></li>
-          <li class="dropdown"><a href="about.html"><span>About</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-            <ul>
-              <li><a href="team.html">Team</a></li>
-              <li><a href="testimonials.html">Testimonials</a></li>
-              <li class="dropdown"><a href="#"><span>Deep Dropdown</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-                <ul>
-                  <li><a href="#">Deep Dropdown 1</a></li>
-                  <li><a href="#">Deep Dropdown 2</a></li>
-                  <li><a href="#">Deep Dropdown 3</a></li>
-                  <li><a href="#">Deep Dropdown 4</a></li>
-                  <li><a href="#">Deep Dropdown 5</a></li>
-                </ul>
+            {navItems.map((item) => (
+              <li class={item.middles.length > 0 ? 'dropdown' : undefined}>
+                <a href={`/blog/${item.majorSlug}`}>
+                  <span>{item.major}</span>
+                  {item.middles.length > 0 && <i class="bi bi-chevron-down toggle-dropdown"></i>}
+                </a>
+                {item.middles.length > 0 && (
+                  <ul>
+                    {item.middles.map((middle) => (
+                      <li>
+                        <a href={`/blog/${item.majorSlug}/${middle.slug}`}>{middle.name}</a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </li>
-            </ul>
-          </li>
-          <li><a href="services.html">Services</a></li>
-          <li><a href="portfolio.html">Portfolio</a></li>
-          <li><a href="pricing.html">Pricing</a></li>
-          <li><a href="blog.html" class="active">Blog</a></li>
-          <li><a href="contact.html">Contact</a></li>
-        </ul>
-        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
-      </nav>
-
-      <a class="btn-getstarted" href="about.html">Get Started</a>
-
-    </div>
-  </header>
-
-  <main class="main">
-
-    <!-- Page Title -->
-    <div class="page-title light-background">
-      <div class="container d-lg-flex justify-content-between align-items-center">
-        <h1 class="mb-2 mb-lg-0">Blog</h1>
-        <nav class="breadcrumbs">
-          <ol>
-            <li><a href="index.html">Home</a></li>
-            <li class="current">Blog</li>
-          </ol>
+            ))}
+          </ul>
+          <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
         </nav>
       </div>
-    </div><!-- End Page Title -->
+    </header>
 
-    <div class="container">
-      <div class="row">
+    <main class="main">
+      <div class="page-title light-background">
+        <div class="container d-lg-flex justify-content-between align-items-center">
+          <h1 class="mb-2 mb-lg-0">Blog</h1>
+          <nav class="breadcrumbs">
+            <ol>
+              <li><a href="/">Home</a></li>
+              <li class="current">Blog</li>
+            </ol>
+          </nav>
+        </div>
+      </div>
 
-        <div class="col-lg-8">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8">
+            <section id="blog-posts" class="blog-posts section">
+              <div class="container">
+                <div class="row gy-4">
+                  {posts.map((post) => (
+                    <div class="col-lg-12">
+                      <article>
+                        <div class="post-img">
+                          <img src={post.data.thumbnail ?? '/images/test-thumbnail.png'} alt={post.data.title} class="img-fluid" />
+                        </div>
 
-          <!-- Blog Posts Section -->
-          <section id="blog-posts" class="blog-posts section">
+                        <h2 class="title">
+                          <a href={getPostUrl(post)}>{post.data.title}</a>
+                        </h2>
 
-            <div class="container">
+                        <div class="meta-top">
+                          <ul>
+                            <li class="d-flex align-items-center">
+                              <i class="bi bi-person"></i>
+                              <a href={getPostUrl(post)}>{post.data.author ?? 'Dennis'}</a>
+                            </li>
+                            <li class="d-flex align-items-center">
+                              <i class="bi bi-clock"></i>
+                              <a href={getPostUrl(post)}>
+                                <time datetime={post.data.pubDate.toISOString()}>
+                                  {post.data.pubDate.toLocaleDateString('ko-KR')}
+                                </time>
+                              </a>
+                            </li>
+                            {(post.data.category?.length ?? 0) > 0 && (
+                              <li class="d-flex align-items-center">
+                                <i class="bi bi-folder"></i>
+                                <span>{post.data.category?.join(' / ')}</span>
+                              </li>
+                            )}
+                          </ul>
+                        </div>
 
-              <div class="row gy-4">
-                {posts.map((post) => (
-
-                <div class="col-lg-12">
-                  <article>
-
-                    <div class="post-img">
-                      <img src={post.data.thumbnail ?? '/images/default-thumbnail.png'} alt={post.data.title} class="img-fluid">
+                        <div class="content">
+                          <p>{post.data.description}</p>
+                          <div class="read-more">
+                            <a href={getPostUrl(post)}>Read More</a>
+                          </div>
+                        </div>
+                      </article>
                     </div>
+                  ))}
 
-                    <h2 class="title">
-                      <a href={`/blog/${post.slug}`}>{post.data.title}</a>
-                    </h2>
-
-                    <div class="meta-top">
-                      <ul>
-                        <li class="d-flex align-items-center"><i class="bi bi-person"></i><a href={`/blog/${post.slug}`}>{post.data.author ?? 'Dennis'}</a></li>
-                        <li class="d-flex align-items-center"><i class="bi bi-clock"></i> <a href={`/blog/${post.slug}`}><time datetime={post.data.pubDate.toISOString()}>{post.data.pubDate.toLocaleDateString('ko-KR')}</time></a></li>
-                        <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a href="blog-details.html">12 Comments</a></li>
-                      </ul>
+                  {posts.length === 0 && (
+                    <div class="col-lg-12">
+                      <article>
+                        <div class="content">
+                          <p>표시할 게시물이 없습니다.</p>
+                        </div>
+                      </article>
                     </div>
-
-                    <div class="content">
-                      <p>
-                        {post.data.description}
-                      </p>
-
-                      <div class="read-more">
-                        <a href={`/blog/${post.slug}`}>Read More</a>
-                      </div>
-                    </div>
-
-                  </article>
-                </div><!-- End post list item -->
-                ))}
-                <div class="col-lg-12">
-
-                  <article>
-
-                    <div class="post-img">
-                      <img src="assets/img/blog/blog-2.jpg" alt="" class="img-fluid">
-                    </div>
-
-                    <h2 class="title">
-                      <a href="blog-details.html">Nisi magni odit consequatur autem nulla dolorem</a>
-                    </h2>
-
-                    <div class="meta-top">
-                      <ul>
-                        <li class="d-flex align-items-center"><i class="bi bi-person"></i> <a href="blog-details.html">John Doe</a></li>
-                        <li class="d-flex align-items-center"><i class="bi bi-clock"></i> <a href="blog-details.html"><time datetime="2022-01-01">Jan 1, 2022</time></a></li>
-                        <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a href="blog-details.html">12 Comments</a></li>
-                      </ul>
-                    </div>
-
-                    <div class="content">
-                      <p>
-                        Incidunt voluptate sit temporibus aperiam. Quia vitae aut sint ullam quis illum voluptatum et. Quo libero rerum voluptatem pariatur nam.
-                        Ad impedit qui officiis est in non aliquid veniam laborum. Id ipsum qui aut. Sit aliquam et quia molestias laboriosam. Tempora nam odit omnis eum corrupti qui aliquid excepturi molestiae. Facilis et sint quos sed voluptas. Maxime sed tempore enim omnis non alias odio quos distinctio.
-                      </p>
-                      <div class="read-more">
-                        <a href="blog-details.html">Read More</a>
-                      </div>
-                    </div>
-
-                  </article>
-
-                </div><!-- End post list item -->
-
-                <div class="col-lg-12">
-
-                  <article>
-
-                    <div class="post-img">
-                      <img src="assets/img/blog/blog-3.jpg" alt="" class="img-fluid">
-                    </div>
-
-                    <h2 class="title">
-                      <a href="blog-details.html">Possimus soluta ut id suscipit ea ut. In quo quia et soluta libero sit sint.</a>
-                    </h2>
-
-                    <div class="meta-top">
-                      <ul>
-                        <li class="d-flex align-items-center"><i class="bi bi-person"></i> <a href="blog-details.html">John Doe</a></li>
-                        <li class="d-flex align-items-center"><i class="bi bi-clock"></i> <a href="blog-details.html"><time datetime="2022-01-01">Jan 1, 2022</time></a></li>
-                        <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a href="blog-details.html">12 Comments</a></li>
-                      </ul>
-                    </div>
-
-                    <div class="content">
-                      <p>
-                        Aut iste neque ut illum qui perspiciatis similique recusandae non. Fugit autem dolorem labore omnis et. Eum temporibus fugiat voluptate enim tenetur sunt omnis.
-                        Doloremque est saepe laborum aut. Ipsa cupiditate ex harum at recusandae nesciunt. Ut dolores velit.
-                      </p>
-                      <div class="read-more">
-                        <a href="blog-details.html">Read More</a>
-                      </div>
-                    </div>
-
-                  </article>
-
-                </div><!-- End post list item -->
-
-                <div class="col-lg-12">
-
-                  <article>
-
-                    <div class="post-img">
-                      <img src="assets/img/blog/blog-4.jpg" alt="" class="img-fluid">
-                    </div>
-
-                    <h2 class="title">
-                      <a href="blog-details.html">Non rem rerum nam cum quo minus. Dolor distinctio deleniti explicabo eius exercitationem.</a>
-                    </h2>
-
-                    <div class="meta-top">
-                      <ul>
-                        <li class="d-flex align-items-center"><i class="bi bi-person"></i> <a href="blog-details.html">John Doe</a></li>
-                        <li class="d-flex align-items-center"><i class="bi bi-clock"></i> <a href="blog-details.html"><time datetime="2022-01-01">Jan 1, 2022</time></a></li>
-                        <li class="d-flex align-items-center"><i class="bi bi-chat-dots"></i> <a href="blog-details.html">12 Comments</a></li>
-                      </ul>
-                    </div>
-
-                    <div class="content">
-                      <p>
-                        Aspernatur rerum perferendis et sint. Voluptates cupiditate voluptas atque quae. Rem veritatis rerum enim et autem. Saepe atque cum eligendi eaque iste omnis a qui.
-                        Quia sed sunt. Ea asperiores expedita et et delectus voluptates rerum. Id saepe ut itaque quod qui voluptas nobis porro rerum. Quam quia nesciunt qui aut est non omnis. Inventore occaecati et quaerat magni itaque nam voluptas. Voluptatem ducimus sint id earum ut nesciunt sed corrupti nemo.
-                      </p>
-                      <div class="read-more">
-                        <a href="blog-details.html">Read More</a>
-                      </div>
-                    </div>
-
-                  </article>
-
-                </div><!-- End post list item -->
-
-              </div><!-- End blog posts list -->
-
-            </div>
-
-          </section><!-- /Blog Posts Section -->
-
-          <!-- Blog Pagination Section -->
-          <section id="blog-pagination" class="blog-pagination section">
-            <div class="container">
-              <div class="d-flex justify-content-center">
-                <ul>
-                  {currentPage > 1 && (
-                    <li>
-                      <a href={`/blog?page=${currentPage - 1}`}>
-                        <i class="bi bi-chevron-left"></i>
-                      </a>
-                    </li>
                   )}
+                </div>
+              </div>
+            </section>
 
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
+            <section id="blog-pagination" class="blog-pagination section">
+              <div class="container">
+                <div class="d-flex justify-content-center">
+                  <ul>
+                    {safeCurrentPage > 1 && (
+                      <li>
+                        <a href={safeCurrentPage - 1 === 1 ? '/blog' : `/blog?page=${safeCurrentPage - 1}`}>
+                          <i class="bi bi-chevron-left"></i>
+                        </a>
+                      </li>
+                    )}
+
+                    {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+                      <li>
+                        <a href={page === 1 ? '/blog' : `/blog?page=${page}`} class={page === safeCurrentPage ? 'active' : undefined}>
+                          {page}
+                        </a>
+                      </li>
+                    ))}
+
+                    {safeCurrentPage < totalPages && (
+                      <li>
+                        <a href={`/blog?page=${safeCurrentPage + 1}`}>
+                          <i class="bi bi-chevron-right"></i>
+                        </a>
+                      </li>
+                    )}
+                  </ul>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <div class="col-lg-4 sidebar">
+            <div class="widgets-container">
+              <div class="blog-author-widget widget-item">
+                <div class="d-flex flex-column align-items-center">
+                  <img src="/images/test-thumbnail.png" class="rounded-circle flex-shrink-0" alt="Author" />
+                  <h4>Dennis</h4>
+                  <p>보안 연구, 악성코드 분석, 디지털 포렌식 관련 내용을 정리하는 블로그입니다.</p>
+                </div>
+              </div>
+
+              <div class="categories-widget widget-item">
+                <h3 class="widget-title">Categories</h3>
+                <ul class="mt-3">
+                  {navItems.map((item) => (
                     <li>
-                      <a
-                        href={`/blog?page=${pageNum}`}
-                        class={pageNum === currentPage ? 'active' : ''}
-                      >
-                        {pageNum}
+                      <a href={`/blog/${item.majorSlug}`}>
+                        {item.major}
+                        <span>({allPosts.filter((post) => (post.data.category?.[0] ?? '') === item.major).length})</span>
                       </a>
                     </li>
                   ))}
-
-                  {currentPage < totalPages && (
-                    <li>
-                      <a href={`/blog?page=${currentPage + 1}`}>
-                        <i class="bi bi-chevron-right"></i>
-                      </a>
-                    </li>
-                  )}
                 </ul>
               </div>
             </div>
-          </section><!-- /Blog Pagination Section -->
-
-        </div>
-
-        <div class="col-lg-4 sidebar">
-
-          <div class="widgets-container">
-
-            <!-- Search Widget -->
-            <div class="search-widget widget-item">
-
-              <h3 class="widget-title">Search</h3>
-              <form action="">
-                <input type="text">
-                <button type="submit" title="Search"><i class="bi bi-search"></i></button>
-              </form>
-
-            </div><!--/Search Widget -->
-
-            <!-- Categories Widget -->
-            <div class="categories-widget widget-item">
-
-              <h3 class="widget-title">Categories</h3>
-              <ul class="mt-3">
-                <li><a href="#">General <span>(25)</span></a></li>
-                <li><a href="#">Lifestyle <span>(12)</span></a></li>
-                <li><a href="#">Travel <span>(5)</span></a></li>
-                <li><a href="#">Design <span>(22)</span></a></li>
-                <li><a href="#">Creative <span>(8)</span></a></li>
-                <li><a href="#">Educaion <span>(14)</span></a></li>
-              </ul>
-
-            </div><!--/Categories Widget -->
-
-            <!-- Recent Posts Widget -->
-            <div class="recent-posts-widget widget-item">
-
-              <h3 class="widget-title">Recent Posts</h3>
-
-              <div class="post-item">
-                <img src="assets/img/blog/blog-recent-1.jpg" alt="" class="flex-shrink-0">
-                <div>
-                  <h4><a href="blog-details.html">Nihil blanditiis at in nihil autem</a></h4>
-                  <time datetime="2020-01-01">Jan 1, 2020</time>
-                </div>
-              </div><!-- End recent post item-->
-
-              <div class="post-item">
-                <img src="assets/img/blog/blog-recent-2.jpg" alt="" class="flex-shrink-0">
-                <div>
-                  <h4><a href="blog-details.html">Quidem autem et impedit</a></h4>
-                  <time datetime="2020-01-01">Jan 1, 2020</time>
-                </div>
-              </div><!-- End recent post item-->
-
-              <div class="post-item">
-                <img src="assets/img/blog/blog-recent-3.jpg" alt="" class="flex-shrink-0">
-                <div>
-                  <h4><a href="blog-details.html">Id quia et et ut maxime similique occaecati ut</a></h4>
-                  <time datetime="2020-01-01">Jan 1, 2020</time>
-                </div>
-              </div><!-- End recent post item-->
-
-              <div class="post-item">
-                <img src="assets/img/blog/blog-recent-4.jpg" alt="" class="flex-shrink-0">
-                <div>
-                  <h4><a href="blog-details.html">Laborum corporis quo dara net para</a></h4>
-                  <time datetime="2020-01-01">Jan 1, 2020</time>
-                </div>
-              </div><!-- End recent post item-->
-
-              <div class="post-item">
-                <img src="assets/img/blog/blog-recent-5.jpg" alt="" class="flex-shrink-0">
-                <div>
-                  <h4><a href="blog-details.html">Et dolores corrupti quae illo quod dolor</a></h4>
-                  <time datetime="2020-01-01">Jan 1, 2020</time>
-                </div>
-              </div><!-- End recent post item-->
-
-            </div><!--/Recent Posts Widget -->
-
-            <!-- Tags Widget -->
-            <div class="tags-widget widget-item">
-
-              <h3 class="widget-title">Tags</h3>
-              <ul>
-                <li><a href="#">App</a></li>
-                <li><a href="#">IT</a></li>
-                <li><a href="#">Business</a></li>
-                <li><a href="#">Mac</a></li>
-                <li><a href="#">Design</a></li>
-                <li><a href="#">Office</a></li>
-                <li><a href="#">Creative</a></li>
-                <li><a href="#">Studio</a></li>
-                <li><a href="#">Smart</a></li>
-                <li><a href="#">Tips</a></li>
-                <li><a href="#">Marketing</a></li>
-              </ul>
-
-            </div><!--/Tags Widget -->
-
-          </div>
-
-        </div>
-
-      </div>
-    </div>
-
-  </main>
-
-  <footer id="footer" class="footer dark-background">
-
-    <div class="container footer-top">
-      <div class="row gy-4">
-        <div class="col-lg-4 col-md-6 footer-about">
-          <a href="index.html" class="logo d-flex align-items-center">
-            <span class="sitename">Sailor</span>
-          </a>
-          <div class="footer-contact pt-3">
-            <p>A108 Adam Street</p>
-            <p>New York, NY 535022</p>
-            <p class="mt-3"><strong>Phone:</strong> <span>+1 5589 55488 55</span></p>
-            <p><strong>Email:</strong> <span>info@example.com</span></p>
-          </div>
-          <div class="social-links d-flex mt-4">
-            <a href=""><i class="bi bi-twitter-x"></i></a>
-            <a href=""><i class="bi bi-facebook"></i></a>
-            <a href=""><i class="bi bi-instagram"></i></a>
-            <a href=""><i class="bi bi-linkedin"></i></a>
           </div>
         </div>
-
-        <div class="col-lg-2 col-md-3 footer-links">
-          <h4>Useful Links</h4>
-          <ul>
-            <li><a href="#">Home</a></li>
-            <li><a href="#">About us</a></li>
-            <li><a href="#">Services</a></li>
-            <li><a href="#">Terms of service</a></li>
-            <li><a href="#">Privacy policy</a></li>
-          </ul>
-        </div>
-
-        <div class="col-lg-2 col-md-3 footer-links">
-          <h4>Our Services</h4>
-          <ul>
-            <li><a href="#">Web Design</a></li>
-            <li><a href="#">Web Development</a></li>
-            <li><a href="#">Product Management</a></li>
-            <li><a href="#">Marketing</a></li>
-            <li><a href="#">Graphic Design</a></li>
-          </ul>
-        </div>
-
-        <div class="col-lg-4 col-md-12 footer-newsletter">
-          <h4>Our Newsletter</h4>
-          <p>Subscribe to our newsletter and receive the latest news about our products and services!</p>
-          <form action="forms/newsletter.php" method="post" class="php-email-form">
-            <div class="newsletter-form"><input type="email" name="email"><input type="submit" value="Subscribe"></div>
-            <div class="loading">Loading</div>
-            <div class="error-message"></div>
-            <div class="sent-message">Your subscription request has been sent. Thank you!</div>
-          </form>
-        </div>
-
       </div>
-    </div>
+    </main>
 
-    <div class="container copyright text-center mt-4">
-      <p>© <span>Copyright</span> <strong class="px-1 sitename">Sailor</strong> <span>All Rights Reserved</span></p>
-      <div class="credits">
-        <!-- All the links in the footer should remain intact. -->
-        <!-- You can delete the links only if you've purchased the pro version. -->
-        <!-- Licensing information: https://bootstrapmade.com/license/ -->
-        <!-- Purchase the pro version with working PHP/AJAX contact form: [buy-url] -->
-        Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a> Distributed by <a href="https://themewagon.com">ThemeWagon</a>
-      </div>
-    </div>
-
-  </footer>
-
-  <!-- Scroll Top -->
-  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-
-  <!-- Preloader -->
-  <div id="preloader"></div>
-
-    <script is:inline src={bootstrapUrl}></script>
-    <script is:inline src={validateUrl}></script>
-    <script is:inline src={aosUrl}></script>
-    <script is:inline src={glightboxUrl}></script>
-    <script is:inline src={imagesloadedUrl}></script>
-    <script is:inline src={isotopeUrl}></script>
-    <script is:inline src={purecounterUrl}></script>
-    <script is:inline src={waypointsUrl}></script>
-    <script is:inline src={swiperUrl}></script>
-
-    <!-- main.js가 ES module이면 아래처럼 module로 -->
+    <script type="module" src={bootstrapUrl}></script>
+    <script type="module" src={validateUrl}></script>
+    <script type="module" src={aosUrl}></script>
+    <script type="module" src={imagesloadedUrl}></script>
+    <script type="module" src={isotopeUrl}></script>
+    <script type="module" src={purecounterUrl}></script>
+    <script type="module" src={waypointsUrl}></script>
+    <script type="module" src={swiperUrl}></script>
     <script type="module" src={mainUrl}></script>
-
-</body>
-
+  </body>
 </html>
