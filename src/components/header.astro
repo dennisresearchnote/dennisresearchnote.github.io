@@ -1,6 +1,13 @@
 ---
 import { getCollection } from 'astro:content';
 
+const slugify = (value: string) =>
+  value
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^\p{L}\p{N}-]+/gu, '');
+
 const posts = (await getCollection('blog')).filter((post) => !post.data.draft);
 
 const categoryMap = posts.reduce((acc, post) => {
@@ -25,48 +32,71 @@ const navItems = Object.entries(categoryMap)
   .sort(([a], [b]) => a.localeCompare(b, 'ko-KR'))
   .map(([major, middleSet]) => ({
     major,
-    middles: [...middleSet].sort((a, b) => a.localeCompare(b, 'ko-KR')),
+    majorSlug: slugify(major),
+    middles: [...middleSet]
+      .sort((a, b) => a.localeCompare(b, 'ko-KR'))
+      .map((middle) => ({
+        name: middle,
+        slug: slugify(middle),
+      })),
   }));
+
+const pathname = Astro.url.pathname;
 ---
 
 <header id="header" class="header d-flex align-items-center sticky-top">
   <div class="container-fluid container-xl position-relative d-flex align-items-center">
-
     <a href="/" class="logo d-flex align-items-center me-auto">
       <h1 class="sitename">DENNIS RESEARCH NOTE</h1>
     </a>
 
     <nav id="navmenu" class="navmenu">
       <ul>
-        <li><a href="/" class={Astro.url.pathname === '/' ? 'active' : ''}>Home</a></li>
+        <li>
+          <a href="/" class={pathname === '/' ? 'active' : undefined}>Home</a>
+        </li>
 
-        {navItems.map((item) => (
-          <li class={item.middles.length > 0 ? 'dropdown' : undefined}>
-            <a href={`/blog/${encodeURIComponent(item.major.toLowerCase())}`}>
-              <span>{item.major}</span>
-              {item.middles.length > 0 && <i class="bi bi-chevron-down toggle-dropdown"></i>}
-            </a>
+        {navItems.map((item) => {
+          const isMajorActive = pathname === `/blog/${item.majorSlug}` || pathname.startsWith(`/blog/${item.majorSlug}/`);
 
-            {item.middles.length > 0 && (
-              <ul>
-                {item.middles.map((middle) => (
-                  <li>
-                    <a href={`/blog/${encodeURIComponent(item.major.toLowerCase())}/${encodeURIComponent(middle.toLowerCase())}`}>
-                      {middle}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </li>
-        ))}
+          return (
+            <li class={item.middles.length > 0 ? 'dropdown' : undefined}>
+              <a href={`/blog/${item.majorSlug}`} class={isMajorActive ? 'active' : undefined}>
+                <span>{item.major}</span>
+                {item.middles.length > 0 && (
+                  <i class="bi bi-chevron-down toggle-dropdown"></i>
+                )}
+              </a>
 
-        <li><a href="/about">About</a></li>
-        <li><a href="/contact">Contact</a></li>
+              {item.middles.length > 0 && (
+                <ul>
+                  {item.middles.map((middle) => {
+                    const middlePath = `/blog/${item.majorSlug}/${middle.slug}`;
+                    const isMiddleActive = pathname === middlePath || pathname.startsWith(`${middlePath}/`);
+
+                    return (
+                      <li>
+                        <a href={middlePath} class={isMiddleActive ? 'active' : undefined}>
+                          {middle.name}
+                        </a>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </li>
+          );
+        })}
+
+        <li>
+          <a href="/about" class={pathname === '/about' ? 'active' : undefined}>About</a>
+        </li>
+        <li>
+          <a href="/contact" class={pathname === '/contact' ? 'active' : undefined}>Contact</a>
+        </li>
       </ul>
 
       <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
     </nav>
-
   </div>
 </header>
