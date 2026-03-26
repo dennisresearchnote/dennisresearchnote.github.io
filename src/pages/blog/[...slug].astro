@@ -205,7 +205,12 @@ if (routeType === 'category') {
 }
 
 if (routeType === 'post') {
-  post = Astro.props.post;
+  post = Astro.props.post ?? null;
+
+  if (!post) {
+    throw new Error('Post props is missing.');
+  }
+
   const rendered = await render(post);
   Content = rendered.Content;
   currentPath = getCategoryPathParts(post);
