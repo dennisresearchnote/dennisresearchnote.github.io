@@ -18,7 +18,7 @@ tags:
 
 author: "Dennis"
 
-thumbnail: "/images/test-thumbnail.png"
+thumbnail: "/images/nohjisun.jpg"
 ---
 
 # Test Post
