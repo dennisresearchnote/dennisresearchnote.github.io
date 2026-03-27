@@ -2,15 +2,14 @@
 title: Text and Typography
 description: Examples of text, typography, math equations, diagrams, flowcharts, pictures, videos, and more.
 author: cotes
-
 pubDate: 2019-08-08T11:33:00+08:00
-
-category: blogging
-tags: [typography]
-
+category:
+  - blogging
+  - demo
+tags:
+  - typography
 featured: true
 draft: false
-
 image: /commons/devices-mockup.png
 ---
 
