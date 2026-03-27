@@ -21,6 +21,13 @@ const getPostUrl = (post: (typeof posts)[number]) => {
   return categoryPath ? `/blog/${categoryPath}/${post.slug}` : `/blog/${post.slug}`;
 };
 
+const formatDate = (date: Date) =>
+  date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+
 const buildWidgets = (targetPosts: typeof posts) => {
   const categoryCountMap = targetPosts.reduce((acc, post) => {
     const major = post.data.category?.[0]?.trim();
@@ -66,7 +73,6 @@ const resolveCategoryRoute = (
     segment.trim().toLowerCase()
   );
 
-  // 1) 기존 방식: prefix 정확 일치
   const exactMatches = allPosts.filter((entry) => {
     const categories = getCategoryPathParts(entry);
     return normalized.every((segment, index) => categories[index] === segment);
@@ -84,8 +90,6 @@ const resolveCategoryRoute = (
     };
   }
 
-  // 2) /blog/{slug} 단일 경로인데 대분류 일치가 없으면
-  //    중분류 slug 로 간주하고 부모 대분류 전체를 보여줌
   if (normalized.length === 1) {
     const targetSlug = normalized[0];
     const matchedParents = new Map<string, string>();
@@ -141,7 +145,7 @@ export async function getStaticPaths() {
     .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
   const categoryPathMap = new Map<string, string[]>();
-  const postPathMap = new Map<string, typeof allPosts[number]>();
+  const postPathMap = new Map<string, (typeof allPosts)[number]>();
 
   for (const post of allPosts) {
     const originalCategories = post.data.category ?? [];
@@ -156,7 +160,6 @@ export async function getStaticPaths() {
       }
     }
 
-    // 중분류 단독 접근도 생성: /blog/malware
     if (categoryParts[1] && !categoryPathMap.has(categoryParts[1])) {
       categoryPathMap.set(categoryParts[1], [originalCategories[1]]);
     }
@@ -225,11 +228,9 @@ const globalWidgets = buildWidgets(posts);
 
 <BaseLayout>
   <main class="main">
-
-    <!-- Page Title -->
     <div class="page-title light-background">
       <div class="container d-lg-flex justify-content-between align-items-center">
-        <h1 class="mb-2 mb-lg-0">{pageTitle}</h1>
+        <h1 class="mb-2 mb-lg-0">{routeType === 'post' ? 'Blog Details' : pageTitle}</h1>
         <nav class="breadcrumbs">
           <ol>
             <li><a href="/">Home</a></li>
@@ -254,31 +255,24 @@ const globalWidgets = buildWidgets(posts);
                     <a href={`/blog/${currentPath.slice(0, index + 1).join('/')}`}>{label}</a>
                   </li>
                 ))}
-                <li class="current">{post.data.title}</li>
+                <li class="current">Blog Details</li>
               </>
             )}
           </ol>
         </nav>
       </div>
-    </div><!-- End Page Title -->
+    </div>
 
     {routeType === 'category' && (
       <div class="container">
         <div class="row">
-
           <div class="col-lg-8">
-
-            <!-- Blog Posts Section -->
             <section id="blog-posts" class="blog-posts section">
-
               <div class="container">
-
                 <div class="row gy-4">
-
                   {filteredPosts.map((entry, index) => (
                     <div class="col-lg-12">
                       <article>
-
                         <div class="post-img">
                           <img
                             src={entry.data.thumbnail ?? `/assets/img/blog/blog-${(index % 4) + 1}.jpg`}
@@ -301,11 +295,7 @@ const globalWidgets = buildWidgets(posts);
                               <i class="bi bi-clock"></i>
                               <a href={getPostUrl(entry)}>
                                 <time datetime={entry.data.pubDate.toISOString()}>
-                                  {entry.data.pubDate.toLocaleDateString('en-US', {
-                                    year: 'numeric',
-                                    month: 'short',
-                                    day: 'numeric',
-                                  })}
+                                  {formatDate(entry.data.pubDate)}
                                 </time>
                               </a>
                             </li>
@@ -318,12 +308,10 @@ const globalWidgets = buildWidgets(posts);
 
                         <div class="content">
                           <p>{entry.data.description}</p>
-
                           <div class="read-more">
                             <a href={getPostUrl(entry)}>Read More</a>
                           </div>
                         </div>
-
                       </article>
                     </div>
                   ))}
@@ -337,45 +325,31 @@ const globalWidgets = buildWidgets(posts);
                       </article>
                     </div>
                   )}
-
-                </div><!-- End blog posts list -->
-
+                </div>
               </div>
-
-            </section><!-- /Blog Posts Section -->
-
+            </section>
           </div>
 
           <div class="col-lg-4 sidebar">
-
             <div class="widgets-container">
-
-              <!-- Search Widget -->
               <div class="search-widget widget-item">
-
                 <h3 class="widget-title">Search</h3>
                 <form action="/blog" method="get">
                   <input type="text" name="q" />
                   <button type="submit" title="Search"><i class="bi bi-search"></i></button>
                 </form>
+              </div>
 
-              </div><!--/Search Widget -->
-
-              <!-- Categories Widget -->
               <div class="categories-widget widget-item">
-
                 <h3 class="widget-title">Categories</h3>
                 <ul class="mt-3">
                   {widgets.categories.map((category) => (
                     <li><a href={`/blog/${category.slug}`}>{category.name} <span>({category.count})</span></a></li>
                   ))}
                 </ul>
+              </div>
 
-              </div><!--/Categories Widget -->
-
-              <!-- Recent Posts Widget -->
               <div class="recent-posts-widget widget-item">
-
                 <h3 class="widget-title">Recent Posts</h3>
 
                 {widgets.recentPosts.map((recent, index) => (
@@ -388,160 +362,142 @@ const globalWidgets = buildWidgets(posts);
                     <div>
                       <h4><a href={getPostUrl(recent)}>{recent.data.title}</a></h4>
                       <time datetime={recent.data.pubDate.toISOString()}>
-                        {recent.data.pubDate.toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'short',
-                          day: 'numeric',
-                        })}
+                        {formatDate(recent.data.pubDate)}
                       </time>
                     </div>
                   </div>
                 ))}
+              </div>
 
-              </div><!--/Recent Posts Widget -->
-
-              <!-- Tags Widget -->
               <div class="tags-widget widget-item">
-
                 <h3 class="widget-title">Tags</h3>
                 <ul>
                   {widgets.tags.map((tag) => (
                     <li><a href="#">{tag.name}</a></li>
                   ))}
                 </ul>
-
-              </div><!--/Tags Widget -->
-
+              </div>
             </div>
-
           </div>
-
         </div>
       </div>
     )}
 
     {routeType === 'post' && post && Content && (
-      <section id="blog-details" class="blog-details section">
-        <div class="container">
-          <div class="row">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8">
+            <section id="blog-details" class="blog-details section">
+              <div class="container">
+                <article class="article">
+                  <div class="post-img">
+                    <img
+                      src={post.data.thumbnail ?? '/assets/img/blog/blog-inside-post.jpg'}
+                      alt={post.data.title}
+                      class="img-fluid"
+                    />
+                  </div>
 
-            <div class="col-lg-8">
-              <article class="article">
+                  <h2 class="title">{post.data.title}</h2>
 
-                <div class="post-img">
-                  <img
-                    src={post.data.thumbnail ?? '/assets/img/blog/blog-inside-post.jpg'}
-                    alt={post.data.title}
-                    class="img-fluid"
-                  />
-                </div>
+                  <div class="meta-top">
+                    <ul>
+                      <li class="d-flex align-items-center">
+                        <i class="bi bi-person"></i>
+                        <a href={getPostUrl(post)}>{post.data.author ?? 'Dennis'}</a>
+                      </li>
+                      <li class="d-flex align-items-center">
+                        <i class="bi bi-clock"></i>
+                        <a href={getPostUrl(post)}>
+                          <time datetime={post.data.pubDate.toISOString()}>
+                            {formatDate(post.data.pubDate)}
+                          </time>
+                        </a>
+                      </li>
+                      <li class="d-flex align-items-center">
+                        <i class="bi bi-chat-dots"></i>
+                        <a href={getPostUrl(post)}>0 Comments</a>
+                      </li>
+                    </ul>
+                  </div>
 
-                <h2 class="title">{post.data.title}</h2>
+                  <div class="content">
+                    <Content />
+                  </div>
 
-                <div class="meta-top">
-                  <ul>
-                    <li class="d-flex align-items-center">
-                      <i class="bi bi-person"></i>
-                      <span>{post.data.author ?? 'Dennis'}</span>
-                    </li>
-                    <li class="d-flex align-items-center">
-                      <i class="bi bi-clock"></i>
-                      <time datetime={post.data.pubDate.toISOString()}>
-                        {post.data.pubDate.toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'short',
-                          day: 'numeric',
-                        })}
-                      </time>
-                    </li>
-                    <li class="d-flex align-items-center">
-                      <i class="bi bi-chat-dots"></i>
-                      <span>0 Comments</span>
-                    </li>
-                  </ul>
-                </div>
+                  <div class="meta-bottom">
+                    <i class="bi bi-folder"></i>
+                    <ul class="cats">
+                      {(post.data.category ?? []).map((category, index) => (
+                        <li>
+                          <a href={`/blog/${currentPath.slice(0, index + 1).join('/')}`}>{category}</a>
+                        </li>
+                      ))}
+                    </ul>
 
-                <div class="content">
-                  <Content />
-                </div>
+                    <i class="bi bi-tags"></i>
+                    <ul class="tags">
+                      {(post.data.tags ?? []).map((tag) => (
+                        <li><a href="#">{tag}</a></li>
+                      ))}
+                    </ul>
+                  </div>
+                </article>
+              </div>
+            </section>
+          </div>
 
-              </article>
-            </div>
-
-            <div class="col-lg-4 sidebar">
-
-              <div class="widgets-container">
-
-                <!-- Search Widget -->
-                <div class="search-widget widget-item">
-
-                  <h3 class="widget-title">Search</h3>
-                  <form action="/blog" method="get">
-                    <input type="text" name="q" />
-                    <button type="submit" title="Search"><i class="bi bi-search"></i></button>
-                  </form>
-
-                </div><!--/Search Widget -->
-
-                <!-- Categories Widget -->
-                <div class="categories-widget widget-item">
-
-                  <h3 class="widget-title">Categories</h3>
-                  <ul class="mt-3">
-                    {globalWidgets.categories.map((category) => (
-                      <li><a href={`/blog/${category.slug}`}>{category.name} <span>({category.count})</span></a></li>
-                    ))}
-                  </ul>
-
-                </div><!--/Categories Widget -->
-
-                <!-- Recent Posts Widget -->
-                <div class="recent-posts-widget widget-item">
-
-                  <h3 class="widget-title">Recent Posts</h3>
-
-                  {globalWidgets.recentPosts.map((recent, index) => (
-                    <div class="post-item">
-                      <img
-                        src={recent.data.thumbnail ?? `/assets/img/blog/blog-recent-${(index % 5) + 1}.jpg`}
-                        alt={recent.data.title}
-                        class="flex-shrink-0"
-                      />
-                      <div>
-                        <h4><a href={getPostUrl(recent)}>{recent.data.title}</a></h4>
-                        <time datetime={recent.data.pubDate.toISOString()}>
-                          {recent.data.pubDate.toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'short',
-                            day: 'numeric',
-                          })}
-                        </time>
-                      </div>
-                    </div>
-                  ))}
-
-                </div><!--/Recent Posts Widget -->
-
-                <!-- Tags Widget -->
-                <div class="tags-widget widget-item">
-
-                  <h3 class="widget-title">Tags</h3>
-                  <ul>
-                    {globalWidgets.tags.map((tag) => (
-                      <li><a href="#">{tag.name}</a></li>
-                    ))}
-                  </ul>
-
-                </div><!--/Tags Widget -->
-
+          <div class="col-lg-4 sidebar">
+            <div class="widgets-container">
+              <div class="search-widget widget-item">
+                <h3 class="widget-title">Search</h3>
+                <form action="/blog" method="get">
+                  <input type="text" name="q" />
+                  <button type="submit" title="Search"><i class="bi bi-search"></i></button>
+                </form>
               </div>
 
-            </div>
+              <div class="categories-widget widget-item">
+                <h3 class="widget-title">Categories</h3>
+                <ul class="mt-3">
+                  {globalWidgets.categories.map((category) => (
+                    <li><a href={`/blog/${category.slug}`}>{category.name} <span>({category.count})</span></a></li>
+                  ))}
+                </ul>
+              </div>
 
+              <div class="recent-posts-widget widget-item">
+                <h3 class="widget-title">Recent Posts</h3>
+
+                {globalWidgets.recentPosts.map((recent, index) => (
+                  <div class="post-item">
+                    <img
+                      src={recent.data.thumbnail ?? `/assets/img/blog/blog-recent-${(index % 5) + 1}.jpg`}
+                      alt={recent.data.title}
+                      class="flex-shrink-0"
+                    />
+                    <div>
+                      <h4><a href={getPostUrl(recent)}>{recent.data.title}</a></h4>
+                      <time datetime={recent.data.pubDate.toISOString()}>
+                        {formatDate(recent.data.pubDate)}
+                      </time>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div class="tags-widget widget-item">
+                <h3 class="widget-title">Tags</h3>
+                <ul>
+                  {globalWidgets.tags.map((tag) => (
+                    <li><a href="#">{tag.name}</a></li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
-      </section>
+      </div>
     )}
-
   </main>
 </BaseLayout>
