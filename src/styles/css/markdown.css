@@ -267,3 +267,84 @@
     white-space: nowrap;
   }
 }
+
+/* Prompt boxes */
+.blog-details .content.post-content blockquote.prompt-tip,
+.blog-details .content.post-content blockquote.prompt-info,
+.blog-details .content.post-content blockquote.prompt-warning,
+.blog-details .content.post-content blockquote.prompt-danger {
+  margin: 1.25rem 0 !important;
+  padding: 1rem 1.25rem 1rem 3rem !important;
+  border-left: 0 !important;
+  border-radius: 12px !important;
+  font-style: normal !important;
+  text-align: left !important;
+  position: relative !important;
+  background-image: none !important;
+}
+
+.blog-details .content.post-content blockquote.prompt-tip::before,
+.blog-details .content.post-content blockquote.prompt-info::before,
+.blog-details .content.post-content blockquote.prompt-warning::before,
+.blog-details .content.post-content blockquote.prompt-danger::before {
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.blog-details .content.post-content blockquote.prompt-tip p,
+.blog-details .content.post-content blockquote.prompt-info p,
+.blog-details .content.post-content blockquote.prompt-warning p,
+.blog-details .content.post-content blockquote.prompt-danger p {
+  margin: 0 !important;
+  color: inherit !important;
+  font-style: normal !important;
+}
+
+.blog-details .content.post-content blockquote.prompt-tip code,
+.blog-details .content.post-content blockquote.prompt-info code,
+.blog-details .content.post-content blockquote.prompt-warning code,
+.blog-details .content.post-content blockquote.prompt-danger code {
+  background: rgba(255, 255, 255, 0.35) !important;
+  color: inherit !important;
+  padding: 0.12rem 0.4rem !important;
+  border-radius: 6px !important;
+}
+
+/* TIP */
+.blog-details .content.post-content blockquote.prompt-tip {
+  background-color: #dff1df !important;
+  color: #2d6a3f !important;
+}
+.blog-details .content.post-content blockquote.prompt-tip::before {
+  content: "💡";
+}
+
+/* INFO */
+.blog-details .content.post-content blockquote.prompt-info {
+  background-color: #dcecf7 !important;
+  color: #245d86 !important;
+}
+.blog-details .content.post-content blockquote.prompt-info::before {
+  content: "ℹ️";
+}
+
+/* WARNING */
+.blog-details .content.post-content blockquote.prompt-warning {
+  background-color: #f6ebc8 !important;
+  color: #8b6a13 !important;
+}
+.blog-details .content.post-content blockquote.prompt-warning::before {
+  content: "⚠️";
+}
+
+/* DANGER */
+.blog-details .content.post-content blockquote.prompt-danger {
+  background-color: #f5dfe3 !important;
+  color: #9a3d46 !important;
+}
+.blog-details .content.post-content blockquote.prompt-danger::before {
+  content: "🚨";
+}
