@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "astro": "^5.17.1",
-    "remark-attributes": "^0.3.2"
+    "remark-attributes": "^0.3.2",
+    "unist-util-visit": "^5.1.0"
   }
 }
