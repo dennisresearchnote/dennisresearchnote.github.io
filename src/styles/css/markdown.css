@@ -1,8 +1,9 @@
 .post-content {
   font-size: 1rem;
-  line-height: 1.75;
+  line-height: 1.8;
   color: #343a40;
   word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .post-content > *:first-child {
@@ -17,10 +18,11 @@
 .post-content h5,
 .post-content h6 {
   color: #1b1e21;
-  font-weight: 600;
-  line-height: 1.3;
-  margin-top: 1.8em;
+  font-weight: 700;
+  line-height: 1.35;
+  margin-top: 1.9em;
   margin-bottom: 0.8em;
+  scroll-margin-top: 110px;
 }
 
 .post-content h1 {
@@ -50,7 +52,7 @@
   color: #6c757d;
 }
 
-/* Paragraph / List / Common spacing */
+/* Common spacing */
 .post-content p,
 .post-content ul,
 .post-content ol,
@@ -58,9 +60,14 @@
 .post-content pre,
 .post-content table,
 .post-content figure,
-.post-content hr {
+.post-content hr,
+.post-content dl {
   margin-top: 0;
   margin-bottom: 1rem;
+}
+
+.post-content p {
+  line-height: 1.85;
 }
 
 .post-content ul,
@@ -69,19 +76,32 @@
 }
 
 .post-content li + li {
-  margin-top: 0.25rem;
+  margin-top: 0.3rem;
 }
 
 .post-content li > ul,
 .post-content li > ol {
-  margin-top: 0.25rem;
-  margin-bottom: 0.25rem;
+  margin-top: 0.35rem;
+  margin-bottom: 0.35rem;
+}
+
+.post-content strong {
+  color: #212529;
+  font-weight: 700;
+}
+
+.post-content mark {
+  background: #fff3bf;
+  color: inherit;
+  padding: 0.05em 0.2em;
+  border-radius: 0.2rem;
 }
 
 /* Links */
 .post-content a {
   color: #0d6efd;
   text-decoration: none;
+  text-underline-offset: 0.14em;
 }
 
 .post-content a:hover {
@@ -98,174 +118,105 @@
 /* Inline code */
 .post-content :not(pre) > code {
   display: inline-block;
-  padding: 0.1rem 0.38rem;
+  padding: 0.14rem 0.42rem;
   border-radius: 0.42rem;
   background-color: #f1f3f5;
-  color: #5c6770;
+  color: #495057;
   font-size: 0.9em;
+  line-height: 1.35;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  word-break: break-all;
 }
 
 /* Filepath */
 .post-content code.filepath {
+  background-color: #eef2f7;
+  color: #3b4956;
   word-break: break-all;
 }
 
-/* Code block */
-.post-content pre {
-  background: #2b2b2b;
-  color: #e9ecef;
-  border-radius: 0.75rem;
-  padding: 1rem 1.1rem;
-  overflow-x: auto;
-  line-height: 1.55;
+/* Code block wrapper */
+.post-content figure.code-block {
+  margin: 1.35rem 0;
 }
 
-.post-content pre code {
+.post-content figure.code-block > figcaption {
+  margin: 0;
+  padding: 0.72rem 1rem;
+  border-radius: 0.8rem 0.8rem 0 0;
+  background: #1f2328;
+  color: #c9d1d9;
+  text-align: left;
+  font-size: 0.86rem;
+  line-height: 1.45;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.post-content figure.code-block > pre {
+  margin-top: 0;
+  border-radius: 0 0 0.8rem 0.8rem;
+}
+
+.post-content pre,
+.post-content pre.astro-code {
+  background: #0d1117;
+  color: #e6edf3;
+  border-radius: 0.8rem;
+  padding: 1rem 1.1rem;
+  overflow-x: auto;
+  line-height: 1.65;
+  font-size: 0.94rem;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0.35rem 1rem rgba(0, 0, 0, 0.08);
+  -webkit-overflow-scrolling: touch;
+}
+
+.post-content pre code,
+.post-content pre.astro-code code {
   background: transparent;
   color: inherit;
   padding: 0;
   border-radius: 0;
-  font-size: 0.94rem;
+  font-size: inherit;
+  line-height: inherit;
+  word-break: normal;
+  white-space: pre;
 }
 
-/* Basic blockquote */
+.post-content pre.astro-code .line {
+  display: block;
+  min-height: 1.65em;
+}
+
+.post-content pre.astro-code .line.highlighted {
+  background: rgba(255, 255, 255, 0.06);
+  margin: 0 -1.1rem;
+  padding: 0 1.1rem;
+}
+
+.post-content pre.astro-code .line.diff.add {
+  background: rgba(46, 160, 67, 0.15);
+}
+
+.post-content pre.astro-code .line.diff.remove {
+  background: rgba(248, 81, 73, 0.15);
+}
+
+/* Blockquote */
 .post-content blockquote {
   position: relative;
   margin-left: 0;
   margin-right: 0;
-  padding: 0.2rem 0 0.2rem 1rem;
+  padding: 0.35rem 0 0.35rem 1rem;
   border-left: 0.25rem solid #ced4da;
-  color: #6c757d;
+  color: #5f6b76;
   font-style: italic;
   background: transparent;
 }
 
 .post-content blockquote p:last-child {
   margin-bottom: 0;
-}
-
-/* Table */
-.post-content table {
-  width: 100%;
-  border-collapse: collapse;
-  border-spacing: 0;
-  min-width: 520px;
-  background: #fff;
-}
-
-.post-content thead th {
-  background-color: #ffffff;
-  color: #343a40;
-  font-weight: 700;
-  border-bottom: 2px solid #dee2e6;
-}
-
-.post-content th,
-.post-content td {
-  padding: 0.85rem 1rem;
-  text-align: left;
-  border-bottom: 1px solid #eceef1;
-}
-
-.post-content tbody tr:nth-child(even) {
-  background-color: #fcfcfd;
-}
-
-/* Images */
-.post-content img {
-  display: block;
-  max-width: 100%;
-  height: auto;
-  margin: 1.5rem auto;
-  border-radius: 0.5rem;
-}
-
-.post-content figure {
-  margin: 1.5rem 0;
-}
-
-.post-content figcaption {
-  margin-top: 0.5rem;
-  text-align: center;
-  color: #868e96;
-  font-size: 0.9rem;
-}
-
-/* Optional utility classes for manual HTML image use */
-.post-content .w-75 {
-  width: 75%;
-}
-
-.post-content .w-50 {
-  width: 50%;
-}
-
-.post-content .normal {
-  margin-left: 0;
-  margin-right: auto;
-}
-
-.post-content .left {
-  float: left;
-  margin: 0 1rem 1rem 0;
-}
-
-.post-content .right {
-  float: right;
-  margin: 0 0 1rem 1rem;
-}
-
-.post-content .shadow {
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-}
-
-.post-content .rounded-10 {
-  border-radius: 10px;
-}
-
-/* Clear floats in paragraphs following floated images */
-.post-content::after {
-  content: "";
-  display: block;
-  clear: both;
-}
-
-/* Mobile */
-@media (max-width: 768px) {
-  .post-content {
-    font-size: 0.98rem;
-  }
-
-  .post-content h1 {
-    font-size: 1.75rem;
-  }
-
-  .post-content h2 {
-    font-size: 1.45rem;
-  }
-
-  .post-content h3 {
-    font-size: 1.25rem;
-  }
-
-  .post-content .w-75,
-  .post-content .w-50 {
-    width: 100%;
-  }
-
-  .post-content .left,
-  .post-content .right {
-    float: none;
-    margin: 1rem auto;
-  }
-
-  .post-content table {
-    min-width: 100%;
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
-  }
 }
 
 /* Prompt boxes */
@@ -347,4 +298,232 @@
 }
 .blog-details .content.post-content blockquote.prompt-danger::before {
   content: "🚨";
+}
+
+/* Table */
+.post-content table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  min-width: 520px;
+  background: #fff;
+  border: 1px solid #eceef1;
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.post-content thead th {
+  background-color: #f8f9fa;
+  color: #343a40;
+  font-weight: 700;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.post-content th,
+.post-content td {
+  padding: 0.85rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #eceef1;
+  vertical-align: top;
+}
+
+.post-content tbody tr:nth-child(even) {
+  background-color: #fcfcfd;
+}
+
+.post-content tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* Description list */
+.post-content dl {
+  margin: 1rem 0;
+}
+
+.post-content dt {
+  margin-top: 0.9rem;
+  font-weight: 700;
+  color: #212529;
+}
+
+.post-content dd {
+  margin-left: 1rem;
+  margin-bottom: 0.5rem;
+  color: #495057;
+}
+
+/* Task list */
+.post-content .task-list-item {
+  list-style: none;
+}
+
+.post-content .task-list-item input[type="checkbox"] {
+  margin-right: 0.55rem;
+  transform: translateY(1px);
+}
+
+/* Keyboard key */
+.post-content kbd {
+  display: inline-block;
+  min-width: 1.7em;
+  padding: 0.12rem 0.42rem;
+  border: 1px solid #ced4da;
+  border-bottom-width: 2px;
+  border-radius: 0.35rem;
+  background: #f8f9fa;
+  color: #212529;
+  font-size: 0.86em;
+  line-height: 1.2;
+  text-align: center;
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.04);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+}
+
+/* Footnotes */
+.post-content .footnotes {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e9ecef;
+  font-size: 0.95rem;
+  color: #495057;
+}
+
+.post-content .footnotes p,
+.post-content .footnotes li {
+  margin-bottom: 0.5rem;
+}
+
+.post-content .footnotes ol {
+  padding-left: 1.25rem;
+}
+
+.post-content .footnote-ref,
+.post-content .footnote-backref {
+  text-decoration: none;
+}
+
+.post-content .footnote-ref {
+  font-size: 0.82em;
+  vertical-align: super;
+}
+
+/* Images */
+.post-content img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1.5rem auto;
+  border-radius: 0.5rem;
+}
+
+.post-content figure {
+  margin: 1.5rem 0;
+}
+
+.post-content figcaption {
+  margin-top: 0.55rem;
+  text-align: center;
+  color: #868e96;
+  font-size: 0.9rem;
+}
+
+/* Optional utility classes */
+.post-content .w-75 {
+  width: 75%;
+}
+
+.post-content .w-50 {
+  width: 50%;
+}
+
+.post-content .normal {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+.post-content .left {
+  float: left;
+  margin: 0 1rem 1rem 0;
+}
+
+.post-content .right {
+  float: right;
+  margin: 0 0 1rem 1rem;
+}
+
+.post-content .shadow {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.post-content .rounded-10 {
+  border-radius: 10px;
+}
+
+.post-content .light {
+  display: block;
+}
+
+.post-content .dark {
+  display: none;
+}
+
+/* Clear floats */
+.post-content::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .post-content {
+    font-size: 0.98rem;
+  }
+
+  .post-content h1 {
+    font-size: 1.75rem;
+  }
+
+  .post-content h2 {
+    font-size: 1.45rem;
+  }
+
+  .post-content h3 {
+    font-size: 1.25rem;
+  }
+
+  .post-content pre,
+  .post-content pre.astro-code {
+    padding: 0.9rem 0.95rem;
+    font-size: 0.88rem;
+    border-radius: 0.7rem;
+  }
+
+  .post-content pre.astro-code .line.highlighted {
+    margin: 0 -0.95rem;
+    padding: 0 0.95rem;
+  }
+
+  .post-content figure.code-block > figcaption {
+    padding: 0.65rem 0.9rem;
+    font-size: 0.82rem;
+  }
+
+  .post-content .w-75,
+  .post-content .w-50 {
+    width: 100%;
+  }
+
+  .post-content .left,
+  .post-content .right {
+    float: none;
+    margin: 1rem auto;
+  }
+
+  .post-content table {
+    min-width: 100%;
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
 }
