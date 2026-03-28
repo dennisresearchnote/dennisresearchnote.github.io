@@ -84,12 +84,12 @@ function applyBlockquoteTrailingAttrs(blockquote) {
   const tail = last.children[last.children.length - 1];
   if (!tail || tail.type !== 'text') return;
 
-  const match = tail.value.match(/(?:\n|^)\{\:\s*([^}]+)\s*\}\s*$/);
+  const match = tail.value.match(/\{\:\s*([^}]+)\s*\}\s*$/);
   if (!match) return;
 
   const attrs = parseAttrString(match[1]);
 
-  tail.value = tail.value.replace(/(?:\n|^)\{\:\s*([^}]+)\s*\}\s*$/, '');
+  tail.value = tail.value.replace(/\{\:\s*([^}]+)\s*\}\s*$/, '');
 
   if (tail.value.length === 0) {
     last.children.pop();
