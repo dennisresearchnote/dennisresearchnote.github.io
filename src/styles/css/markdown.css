@@ -9,7 +9,6 @@
   margin-top: 0 !important;
 }
 
-/* headings */
 .post-content h1,
 .post-content h2,
 .post-content h3,
@@ -23,9 +22,7 @@
   margin-bottom: 0.8em;
 }
 
-.post-content h1 {
-  font-size: 2rem;
-}
+.post-content h1 { font-size: 2rem; }
 
 .post-content h2 {
   font-size: 1.65rem;
@@ -33,21 +30,16 @@
   padding-bottom: 0.45rem;
 }
 
-.post-content h3 {
-  font-size: 1.4rem;
-}
+.post-content h3 { font-size: 1.4rem; }
+.post-content h4 { font-size: 1.15rem; }
 
-.post-content h4 {
-  font-size: 1.15rem;
-}
-
-/* paragraph / list */
 .post-content p,
 .post-content ul,
 .post-content ol,
 .post-content blockquote,
 .post-content pre,
-.post-content table {
+.post-content table,
+.post-content figure {
   margin-top: 0;
   margin-bottom: 1rem;
 }
@@ -61,7 +53,12 @@
   margin-top: 0.25rem;
 }
 
-/* link */
+.post-content li > ul,
+.post-content li > ol {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
 .post-content a {
   color: #0d6efd;
   text-decoration: none;
@@ -71,14 +68,12 @@
   text-decoration: underline;
 }
 
-/* hr */
 .post-content hr {
   margin: 2rem 0;
   border: 0;
   border-top: 1px solid #dee2e6;
 }
 
-/* inline code */
 .post-content :not(pre) > code {
   display: inline-block;
   padding: 0.1rem 0.38rem;
@@ -89,9 +84,12 @@
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
 }
 
-/* code block */
+.post-content .filepath {
+  word-break: break-all;
+}
+
 .post-content pre {
-  background: #1e1e1e;
+  background: #2b2b2b;
   color: #e9ecef;
   border-radius: 0.75rem;
   padding: 1rem 1.1rem;
@@ -107,7 +105,6 @@
   font-size: 0.94rem;
 }
 
-/* basic blockquote */
 .post-content blockquote {
   position: relative;
   margin-left: 0;
@@ -123,7 +120,6 @@
   margin-bottom: 0;
 }
 
-/* prompt common */
 .post-content blockquote.prompt-tip,
 .post-content blockquote.prompt-info,
 .post-content blockquote.prompt-warning,
@@ -163,43 +159,30 @@
   color: inherit;
 }
 
-/* tip */
 .post-content blockquote.prompt-tip {
   background-color: #e9f8eb;
   color: #2b6b3f;
 }
-.post-content blockquote.prompt-tip::before {
-  content: "💡";
-}
+.post-content blockquote.prompt-tip::before { content: "💡"; }
 
-/* info */
 .post-content blockquote.prompt-info {
   background-color: #e7f2fa;
   color: #245d86;
 }
-.post-content blockquote.prompt-info::before {
-  content: "ℹ️";
-}
+.post-content blockquote.prompt-info::before { content: "ℹ️"; }
 
-/* warning */
 .post-content blockquote.prompt-warning {
   background-color: #f8efcf;
   color: #8b6a13;
 }
-.post-content blockquote.prompt-warning::before {
-  content: "⚠️";
-}
+.post-content blockquote.prompt-warning::before { content: "⚠️"; }
 
-/* danger */
 .post-content blockquote.prompt-danger {
   background-color: #f7e3e6;
   color: #9a3d46;
 }
-.post-content blockquote.prompt-danger::before {
-  content: "🚨";
-}
+.post-content blockquote.prompt-danger::before { content: "🚨"; }
 
-/* table */
 .post-content .table-wrapper {
   width: 100%;
   overflow-x: auto;
@@ -232,7 +215,6 @@
   background-color: #fcfcfd;
 }
 
-/* images */
 .post-content img {
   display: block;
   max-width: 100%;
@@ -240,6 +222,14 @@
   margin: 1.5rem auto;
   border-radius: 0.5rem;
 }
+
+.post-content .w-75 { width: 75%; }
+.post-content .w-50 { width: 50%; }
+.post-content .normal { margin-left: 0; margin-right: auto; }
+.post-content .left { float: left; margin: 0 1rem 1rem 0; }
+.post-content .right { float: right; margin: 0 0 1rem 1rem; }
+.post-content .shadow { box-shadow: 0 0.5rem 1rem rgba(0,0,0,.15); }
+.post-content .rounded-10 { border-radius: 10px; }
 
 .post-content figure {
   margin: 1.5rem 0;
@@ -257,16 +247,19 @@
     font-size: 0.98rem;
   }
 
-  .post-content h1 {
-    font-size: 1.75rem;
+  .post-content h1 { font-size: 1.75rem; }
+  .post-content h2 { font-size: 1.45rem; }
+  .post-content h3 { font-size: 1.25rem; }
+
+  .post-content .w-75,
+  .post-content .w-50 {
+    width: 100%;
   }
 
-  .post-content h2 {
-    font-size: 1.45rem;
-  }
-
-  .post-content h3 {
-    font-size: 1.25rem;
+  .post-content .left,
+  .post-content .right {
+    float: none;
+    margin: 1rem auto;
   }
 
   .post-content blockquote.prompt-tip,

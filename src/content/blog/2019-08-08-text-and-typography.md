@@ -18,16 +18,12 @@ image: /commons/devices-mockup.png
 <!-- markdownlint-capture -->
 <!-- markdownlint-disable -->
 # H1 — heading
-{: .mt-4 .mb-0 }
 
 ## H2 — heading
-{: data-toc-skip='' .mt-4 .mb-0 }
 
 ### H3 — heading
-{: data-toc-skip='' .mt-4 .mb-0 }
 
 #### H4 — heading
-{: data-toc-skip='' .mt-4 }
 <!-- markdownlint-restore -->
 
 ## Paragraph
@@ -72,16 +68,12 @@ Moon
 <!-- markdownlint-capture -->
 <!-- markdownlint-disable -->
 > An example showing the `tip` type prompt.
-{: .prompt-tip }
 
 > An example showing the `info` type prompt.
-{: .prompt-info }
 
 > An example showing the `warning` type prompt.
-{: .prompt-warning }
 
 > An example showing the `danger` type prompt.
-{: .prompt-danger }
 <!-- markdownlint-restore -->
 
 ## Tables
