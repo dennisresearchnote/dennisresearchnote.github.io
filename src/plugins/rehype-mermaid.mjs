@@ -1,5 +1,12 @@
 import { visit } from 'unist-util-visit';
 
+function extractText(node) {
+  if (!node) return '';
+  if (node.type === 'text') return node.value || '';
+  if (!Array.isArray(node.children)) return '';
+  return node.children.map(extractText).join('');
+}
+
 export default function rehypeMermaid() {
   return (tree) => {
     visit(tree, 'element', (node, index, parent) => {
@@ -16,10 +23,8 @@ export default function rehypeMermaid() {
 
       if (!classes.includes('language-mermaid')) return;
 
-      const text = code.children
-        ?.filter((child) => child.type === 'text')
-        ?.map((child) => child.value)
-        ?.join('') ?? '';
+      const text = extractText(code).trim();
+      if (!text) return;
 
       parent.children[index] = {
         type: 'element',
