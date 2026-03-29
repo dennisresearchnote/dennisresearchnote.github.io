@@ -76,21 +76,30 @@ import mainUrl from '../scripts/js/main.js?url';
     <script type="module" src={mainUrl}></script>
     <!-- main.js가 ES module이면 아래처럼 module로 -->
 <script type="module" is:inline>
-  import mermaid from 'mermaid';
+  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
 
   mermaid.initialize({
     startOnLoad: false,
-    securityLevel: 'loose',
-    theme: 'default'
+    securityLevel: "loose",
+    theme: "default"
   });
 
   const runMermaid = async () => {
-    const nodes = document.querySelectorAll('.mermaid');
+    const nodes = document.querySelectorAll(".mermaid");
     if (!nodes.length) return;
-    await mermaid.run({ nodes });
+
+    try {
+      await mermaid.run({ nodes });
+    } catch (err) {
+      console.error("Mermaid render error:", err);
+    }
   };
 
-  runMermaid();
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", runMermaid, { once: true });
+  } else {
+    runMermaid();
+  }
 </script>
 </body>
 
