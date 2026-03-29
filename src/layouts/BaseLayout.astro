@@ -74,23 +74,6 @@ import mainUrl from '../scripts/js/main.js?url';
     <script is:inline src={swiperUrl}></script>
 
     <!-- main.js가 ES module이면 아래처럼 module로 -->
-    <script type="module" is:inline>
-  import mermaid from 'mermaid';
-
-  mermaid.initialize({
-    startOnLoad: false,
-    securityLevel: 'loose',
-    theme: 'default'
-  });
-
-  const runMermaid = async () => {
-    const nodes = document.querySelectorAll('.mermaid');
-    if (!nodes.length) return;
-    await mermaid.run({ nodes });
-  };
-
-  runMermaid();
-</script>
 
 </body>
 
