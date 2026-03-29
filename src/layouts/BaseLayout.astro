@@ -26,13 +26,6 @@ import purecounterUrl from '../scripts/vendor/purecounter/purecounter_vanilla.js
 import waypointsUrl from '../scripts/vendor/waypoints/noframework.waypoints.js?url';
 import swiperUrl from '../scripts/vendor/swiper/swiper-bundle.min.js?url';
 
-/* mermaid */
-<script type="module">
-  import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs";
-
-  mermaid.initialize({ startOnLoad: true });
-</script>
-
 /* Main JS File */
 import mainUrl from '../scripts/js/main.js?url';
 ---
@@ -81,7 +74,23 @@ import mainUrl from '../scripts/js/main.js?url';
     <script is:inline src={swiperUrl}></script>
 
     <!-- main.js가 ES module이면 아래처럼 module로 -->
-    <script type="module" src={mainUrl}></script>
+    <script type="module" is:inline>
+  import mermaid from 'mermaid';
+
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'loose',
+    theme: 'default'
+  });
+
+  const runMermaid = async () => {
+    const nodes = document.querySelectorAll('.mermaid');
+    if (!nodes.length) return;
+    await mermaid.run({ nodes });
+  };
+
+  runMermaid();
+</script>
 
 </body>
 
