@@ -250,8 +250,10 @@
 /* prompt boxes */
 .blog-details .content.post-content blockquote[class^="prompt-"] {
   border-left: 0 !important;
-  position: relative;
-  padding: 1rem 1rem 1rem 3rem !important;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 1rem 1rem 1rem 1rem !important;
   color: var(--prompt-text-color, rgba(46, 46, 46, 0.77)) !important;
   border-radius: 10px !important;
   text-align: left !important;
@@ -262,18 +264,22 @@
 .blog-details .content.post-content blockquote[class^="prompt-"] p {
   color: inherit !important;
   line-height: 1.75 !important;
-  margin-bottom: 0 !important;
+  margin: 0 !important;
   font-style: normal !important;
   font-weight: 400 !important;
   font-size: 1rem !important;
+  flex: 1;
 }
 
 .blog-details .content.post-content blockquote[class^="prompt-"]::before {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 1.25rem;
+  width: 1.25rem;
+  min-width: 1.25rem;
+  position: static;
   text-align: center;
-  width: 3rem;
-  position: absolute;
-  left: 0.25rem;
-  top: 1rem;
   font-size: 1rem;
   line-height: 1;
   text-rendering: auto;
@@ -300,7 +306,7 @@
 .blog-details .content.post-content blockquote.prompt-info::before {
   content: "\f06a";
   color: var(--prompt-info-icon-color, #0070cb);
-  transform: rotate(180deg);
+  transform: rotate(180deg) !important;
 }
 
 .blog-details .content.post-content blockquote.prompt-warning {
