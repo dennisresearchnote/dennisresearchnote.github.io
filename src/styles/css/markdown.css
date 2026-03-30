@@ -455,25 +455,99 @@
 }
 
 /* ------------------------------
- * Code blocks (Astro/Shiki)
+ * Chirpy-style code block wrapper
  * ------------------------------ */
-.blog-details .content.post-content pre,
-.blog-details .content.post-content pre.astro-code {
-  margin: 1.2rem 0 !important;
-  padding: 1rem 1.15rem !important;
-  overflow-x: auto !important;
-  border-radius: 10px !important;
-  background: var(--highlight-bg-color, #f6f8fa) !important;
-  color: var(--highlighter-rouge-color, #3f596f) !important;
-  box-shadow: var(--language-border-color, #ececec) 0 0 0 1px !important;
-  line-height: 1.4rem !important;
-  font-size: 0.85rem !important;
-  -webkit-overflow-scrolling: touch;
-  text-align: left !important;
+.blog-details .content.post-content .code-block {
+  margin: 1.25rem 0;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: var(--language-border-color, #ececec) 0 0 0 1px;
+  background-color: var(--highlight-bg-color, #f6f8fa);
 }
 
-.blog-details .content.post-content pre code,
-.blog-details .content.post-content pre.astro-code code {
+.blog-details .content.post-content .code-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 2.5rem;
+  padding: 0 0.75rem 0 1rem;
+  background: #f3f4f6;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.blog-details .content.post-content .code-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.blog-details .content.post-content .code-dots {
+  position: relative;
+  display: inline-block;
+  width: 0.72rem;
+  height: 0.72rem;
+  border-radius: 50%;
+  background: #d6d8db;
+  box-shadow:
+    1.1rem 0 0 #d6d8db,
+    2.2rem 0 0 #d6d8db;
+  flex-shrink: 0;
+}
+
+.blog-details .content.post-content .code-lang {
+  margin-left: 2.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--code-header-text-color, #8a8f98);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: lowercase;
+  letter-spacing: 0.01em;
+}
+
+.blog-details .content.post-content .code-copy-btn {
+  border: 0;
+  background: transparent;
+  color: var(--code-header-icon-color, #8f96a3);
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1;
+  padding: 0.45rem 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.blog-details .content.post-content .code-copy-btn:hover {
+  background: rgba(0, 0, 0, 0.06);
+  color: #4b5563;
+}
+
+.blog-details .content.post-content .code-copy-btn.copied {
+  color: #1f9d55;
+}
+
+.blog-details .content.post-content .code-block pre,
+.blog-details .content.post-content .code-block pre.astro-code {
+  margin: 0 !important;
+  padding: 1rem 1.15rem !important;
+  overflow-x: auto !important;
+  border-radius: 0 !important;
+  background: var(--highlight-bg-color, #f6f8fa) !important;
+  color: var(--highlighter-rouge-color, #3f596f) !important;
+  box-shadow: none !important;
+  line-height: 1.45rem !important;
+  font-size: 0.87rem !important;
+  text-align: left !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+.blog-details .content.post-content .code-block pre code,
+.blog-details .content.post-content .code-block pre.astro-code code {
   background: transparent !important;
   color: inherit !important;
   padding: 0 !important;
@@ -483,19 +557,35 @@
   word-break: normal !important;
 }
 
-.blog-details .content.post-content pre.astro-code .line {
+.blog-details .content.post-content .code-block pre.astro-code .line {
   display: block;
 }
 
-.blog-details .content.post-content pre.astro-code .line.highlighted {
+.blog-details .content.post-content .code-block pre.astro-code .line.highlighted {
   background-color: rgba(0, 0, 0, 0.04);
   margin: 0 -1.15rem;
   padding: 0 1.15rem;
 }
 
-.blog-details .content.post-content pre.astro-code [data-line]::before {
+.blog-details .content.post-content .code-block pre.astro-code [data-line]::before {
   user-select: none;
   color: var(--highlight-lineno-color, #9e9e9e);
+}
+
+/* fallback when wrapper JS has not run yet */
+.blog-details .content.post-content > pre,
+.blog-details .content.post-content > pre.astro-code {
+  margin: 1.2rem 0 !important;
+  padding: 1rem 1.15rem !important;
+  overflow-x: auto !important;
+  border-radius: 10px !important;
+  background: var(--highlight-bg-color, #f6f8fa) !important;
+  color: var(--highlighter-rouge-color, #3f596f) !important;
+  box-shadow: var(--language-border-color, #ececec) 0 0 0 1px !important;
+  line-height: 1.45rem !important;
+  font-size: 0.87rem !important;
+  text-align: left !important;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* ------------------------------
@@ -519,6 +609,31 @@
     margin-right: -1rem;
     border-radius: 0;
     max-width: none;
+  }
+
+  .blog-details .content.post-content .code-header {
+    padding: 0 0.65rem 0 0.85rem;
+  }
+
+  .blog-details .content.post-content .code-lang {
+    font-size: 0.78rem;
+    margin-left: 2.3rem;
+  }
+
+  .blog-details .content.post-content .code-copy-btn {
+    font-size: 0.76rem;
+    padding: 0.4rem 0.5rem;
+  }
+
+  .blog-details .content.post-content .code-block pre,
+  .blog-details .content.post-content .code-block pre.astro-code {
+    padding: 0.9rem 1rem !important;
+    font-size: 0.82rem !important;
+  }
+
+  .blog-details .content.post-content .code-block pre.astro-code .line.highlighted {
+    margin: 0 -1rem;
+    padding: 0 1rem;
   }
 }
 

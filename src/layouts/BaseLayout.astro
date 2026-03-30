@@ -115,5 +115,94 @@ import mainUrl from "../scripts/js/main.js?url";
         runMermaid();
       }
     </script>
+    <script is:inline>
+  const initChirpyCodeBlocks = () => {
+    const containers = document.querySelectorAll(".post-content");
+
+    containers.forEach((container) => {
+      const pres = container.querySelectorAll("pre");
+
+      pres.forEach((pre) => {
+        if (pre.closest(".code-block")) return;
+
+        const code = pre.querySelector("code");
+        if (!code) return;
+
+        const language =
+          pre.getAttribute("data-language") ||
+          code.getAttribute("data-language") ||
+          [...pre.classList]
+            .find((cls) => cls.startsWith("language-"))
+            ?.replace("language-", "") ||
+          [...code.classList]
+            .find((cls) => cls.startsWith("language-"))
+            ?.replace("language-", "") ||
+          "text";
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "code-block";
+
+        const header = document.createElement("div");
+        header.className = "code-header";
+
+        const headerLeft = document.createElement("div");
+        headerLeft.className = "code-header-left";
+
+        const dots = document.createElement("span");
+        dots.className = "code-dots";
+        dots.setAttribute("aria-hidden", "true");
+
+        const label = document.createElement("span");
+        label.className = "code-lang";
+        label.textContent = language;
+
+        headerLeft.appendChild(dots);
+        headerLeft.appendChild(label);
+
+        const copyBtn = document.createElement("button");
+        copyBtn.type = "button";
+        copyBtn.className = "code-copy-btn";
+        copyBtn.setAttribute("aria-label", "Copy code");
+        copyBtn.textContent = "Copy";
+
+        copyBtn.addEventListener("click", async () => {
+          try {
+            const text = code.innerText;
+            await navigator.clipboard.writeText(text);
+            copyBtn.textContent = "Copied";
+            copyBtn.classList.add("copied");
+
+            window.setTimeout(() => {
+              copyBtn.textContent = "Copy";
+              copyBtn.classList.remove("copied");
+            }, 1600);
+          } catch (err) {
+            console.error("Failed to copy code:", err);
+            copyBtn.textContent = "Failed";
+
+            window.setTimeout(() => {
+              copyBtn.textContent = "Copy";
+            }, 1600);
+          }
+        });
+
+        header.appendChild(headerLeft);
+        header.appendChild(copyBtn);
+
+        pre.parentNode?.insertBefore(wrapper, pre);
+        wrapper.appendChild(header);
+        wrapper.appendChild(pre);
+      });
+    });
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initChirpyCodeBlocks, {
+      once: true,
+    });
+  } else {
+    initChirpyCodeBlocks();
+  }
+</script>
   </body>
 </html>
