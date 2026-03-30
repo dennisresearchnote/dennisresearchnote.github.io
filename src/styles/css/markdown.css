@@ -1,59 +1,64 @@
+/* ========================================
+ * Astro Markdown CSS
+ * Chirpy-inspired, scoped to .post-content
+ * ======================================== */
+
 .post-content {
-  color: #3c4043;
   font-size: 1.08rem;
-  line-height: 1.85;
-  letter-spacing: -0.01em;
-  word-break: break-word;
+  line-height: 1.75;
+  color: var(--text-color, #34343c);
   overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .post-content > *:first-child {
   margin-top: 0 !important;
 }
 
-/* --------------------------------
+/* ------------------------------
  * Typography
- * -------------------------------- */
+ * ------------------------------ */
 .post-content h1,
 .post-content h2,
 .post-content h3,
 .post-content h4,
-.post-content h5,
-.post-content h6 {
-  color: #2b2b2b;
-  font-weight: 700;
+.post-content h5 {
+  color: var(--heading-color, #2a2a2a);
+  font-weight: 400;
+  font-family: Lato, "Microsoft Yahei", sans-serif;
   line-height: 1.35;
-  letter-spacing: -0.02em;
-  margin-top: 1.9em;
-  margin-bottom: 0.8em;
-  scroll-margin-top: 100px;
 }
 
 .post-content h1 {
-  font-size: 2.15rem;
+  font-size: 2rem;
+  margin: 2rem 0 1rem;
 }
 
 .post-content h2 {
-  font-size: 1.75rem;
-  padding-bottom: 0.4rem;
-  border-bottom: 1px solid #ececec;
+  font-size: 1.54rem;
+  margin: 2.5rem 0 1.25rem;
 }
 
 .post-content h3 {
-  font-size: 1.45rem;
+  font-size: 1.36rem;
+  margin: 2rem 0 1rem;
 }
 
 .post-content h4 {
-  font-size: 1.2rem;
+  font-size: 1.18rem;
+  margin: 2rem 0 1rem;
 }
 
 .post-content h5 {
-  font-size: 1.02rem;
+  font-size: 1.05rem;
+  margin: 1.75rem 0 0.9rem;
 }
 
 .post-content h6 {
-  font-size: 0.94rem;
-  color: #6c757d;
+  font-size: 0.95rem;
+  margin: 1.5rem 0 0.75rem;
+  color: var(--label-color, #585858);
+  font-weight: 600;
 }
 
 .post-content p,
@@ -66,480 +71,439 @@
 .post-content figure,
 .post-content hr {
   margin-top: 0;
-  margin-bottom: 1.15rem;
-}
-
-.post-content p {
-  line-height: 1.9;
+  margin-bottom: 1rem;
 }
 
 .post-content strong {
   font-weight: 700;
-  color: #222;
 }
 
 .post-content em {
-  color: inherit;
-}
-
-.post-content del {
-  opacity: 0.8;
-}
-
-.post-content mark {
-  background: #fff4bf;
-  color: inherit;
-  padding: 0.05em 0.25em;
-  border-radius: 0.25rem;
-}
-
-.post-content small {
-  font-size: 0.875em;
-  color: #6c757d;
-}
-
-/* --------------------------------
- * Links
- * -------------------------------- */
-.post-content a {
-  color: #0d6efd;
-  text-decoration: none;
-  word-break: break-word;
-}
-
-.post-content a:hover {
-  text-decoration: underline;
-  text-underline-offset: 0.15em;
-}
-
-/* --------------------------------
- * Lists
- * -------------------------------- */
-.post-content ul,
-.post-content ol {
-  padding-left: 1.55rem;
-}
-
-.post-content li {
-  margin: 0.3rem 0;
-}
-
-.post-content li > ul,
-.post-content li > ol {
-  margin-top: 0.35rem;
-  margin-bottom: 0.35rem;
-}
-
-.post-content li::marker {
-  color: #6c757d;
-}
-
-/* --------------------------------
- * Blockquote
- * -------------------------------- */
-.post-content blockquote {
-  position: relative;
-  margin-left: 0;
-  margin-right: 0;
-  padding: 0.15rem 0 0.15rem 1rem;
-  border-left: 4px solid #cfd8dc;
-  color: #5f6368;
   font-style: italic;
-  background: transparent;
 }
 
-.post-content blockquote p:last-child {
-  margin-bottom: 0;
-}
-
-/* --------------------------------
- * Prompt Boxes (Chirpy-like)
- * -------------------------------- */
-.post-content blockquote.prompt-tip,
-.post-content blockquote.prompt-info,
-.post-content blockquote.prompt-warning,
-.post-content blockquote.prompt-danger {
-  position: relative;
-  margin: 1.4rem 0;
-  padding: 1rem 1rem 1rem 3.15rem;
-  border-left: 0;
-  border-radius: 0.85rem;
-  font-style: normal;
-  box-shadow: 0 0.2rem 0.75rem rgba(0, 0, 0, 0.05);
-}
-
-.post-content blockquote.prompt-tip::before,
-.post-content blockquote.prompt-info::before,
-.post-content blockquote.prompt-warning::before,
-.post-content blockquote.prompt-danger::before {
-  position: absolute;
-  left: 1rem;
-  top: 1rem;
-  width: 1.25rem;
-  text-align: center;
-  font-size: 1rem;
-  line-height: 1.2;
-}
-
-.post-content blockquote.prompt-tip p,
-.post-content blockquote.prompt-info p,
-.post-content blockquote.prompt-warning p,
-.post-content blockquote.prompt-danger p {
-  margin: 0;
-}
-
-.post-content blockquote.prompt-tip code,
-.post-content blockquote.prompt-info code,
-.post-content blockquote.prompt-warning code,
-.post-content blockquote.prompt-danger code {
-  background: rgba(255, 255, 255, 0.45);
-  color: inherit;
-}
-
-/* TIP */
-.post-content blockquote.prompt-tip {
-  background: #e9f7ef;
-  color: #216e39;
-}
-.post-content blockquote.prompt-tip::before {
-  content: "💡";
-}
-
-/* INFO */
-.post-content blockquote.prompt-info {
-  background: #e8f1fb;
-  color: #245b8a;
-}
-.post-content blockquote.prompt-info::before {
-  content: "ℹ️";
-}
-
-/* WARNING */
-.post-content blockquote.prompt-warning {
-  background: #fff3cd;
-  color: #8a6700;
-}
-.post-content blockquote.prompt-warning::before {
-  content: "⚠️";
-}
-
-/* DANGER */
-.post-content blockquote.prompt-danger {
-  background: #f8d7da;
-  color: #842029;
-}
-.post-content blockquote.prompt-danger::before {
-  content: "🚨";
-}
-
-/* --------------------------------
- * Inline Code
- * -------------------------------- */
-.post-content :not(pre) > code {
-  display: inline-block;
-  vertical-align: baseline;
-  padding: 0.12rem 0.45rem;
-  margin: 0 0.1rem;
-  border-radius: 0.42rem;
-  background-color: #f3f4f5;
-  color: #c92a2a;
-  font-size: 0.92em;
-  line-height: 1.45;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-  word-break: break-all;
-}
-
-.post-content code.filepath {
-  background-color: #edf2f7;
-  color: #495057;
-}
-
-/* --------------------------------
- * Code Block
- * -------------------------------- */
-.post-content pre,
-.post-content pre.astro-code {
-  margin: 1.35rem 0;
-  padding: 1rem 1.1rem;
-  border-radius: 0.9rem;
-  overflow-x: auto;
-  background: #1e1e1e;
-  color: #f8f8f2;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.08);
-  line-height: 1.7;
-  font-size: 0.94rem;
-  -webkit-overflow-scrolling: touch;
-}
-
-.post-content pre code,
-.post-content pre.astro-code code {
-  padding: 0;
-  margin: 0;
-  background: transparent;
-  color: inherit;
-  border-radius: 0;
-  font-size: inherit;
-  line-height: inherit;
-  word-break: normal;
-  white-space: pre;
-}
-
-.post-content pre.astro-code .line {
-  display: block;
-  min-height: 1.65em;
-}
-
-/* --------------------------------
- * Horizontal Rule
- * -------------------------------- */
 .post-content hr {
   border: 0;
-  border-top: 1px solid #e9ecef;
+  border-top: 1px solid var(--main-border-color, #f3f3f3);
+  opacity: 1;
   margin: 2rem 0;
 }
 
-/* --------------------------------
- * Tables
- * -------------------------------- */
-.post-content table {
-  width: 100%;
-  border-collapse: collapse;
-  border-spacing: 0;
-  min-width: 540px;
-  background: #fff;
-  border: 1px solid #ececec;
-  border-radius: 0.8rem;
-  overflow: hidden;
+/* ------------------------------
+ * Links
+ * ------------------------------ */
+.post-content a {
+  color: var(--link-color, #0056b2);
+  text-decoration: none;
+  border-bottom: 1px solid var(--link-underline-color, #dee2e6);
 }
 
-.post-content th,
-.post-content td {
-  padding: 0.85rem 1rem;
-  text-align: left;
-  vertical-align: top;
-  border-bottom: 1px solid #efefef;
-}
-
-.post-content th {
-  font-weight: 700;
-  color: #2f2f2f;
-  background: #f8f9fa;
-}
-
-.post-content tbody tr:nth-child(even) {
-  background: #fcfcfd;
-}
-
-.post-content tbody tr:last-child td {
-  border-bottom: 0;
-}
-
-/* --------------------------------
- * Description List
- * -------------------------------- */
-.post-content dl {
-  margin: 1rem 0;
-}
-
-.post-content dt {
-  margin-top: 0.9rem;
-  font-weight: 700;
-  color: #212529;
-}
-
-.post-content dd {
-  margin-left: 1rem;
-  margin-bottom: 0.5rem;
-  color: #495057;
-}
-
-/* --------------------------------
- * Task List
- * -------------------------------- */
-.post-content .task-list-item {
-  list-style: none;
-}
-
-.post-content .task-list-item input[type="checkbox"] {
-  margin-right: 0.55rem;
-  transform: translateY(1px);
-}
-
-/* --------------------------------
- * Keyboard
- * -------------------------------- */
-.post-content kbd {
-  display: inline-block;
-  min-width: 1.7em;
-  padding: 0.14rem 0.45rem;
-  border: 1px solid #d0d7de;
-  border-bottom-width: 2px;
-  border-radius: 0.4rem;
-  background: #f8f9fa;
-  color: #24292f;
-  font-size: 0.86em;
-  line-height: 1.2;
-  text-align: center;
-  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.04);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-}
-
-/* --------------------------------
- * Footnotes
- * -------------------------------- */
-.post-content .footnotes {
-  margin-top: 2.4rem;
-  padding-top: 1rem;
-  border-top: 1px solid #ececec;
-  font-size: 0.96rem;
-  color: #5c6370;
-}
-
-.post-content .footnotes ol {
-  padding-left: 1.35rem;
-}
-
-.post-content .footnotes li {
-  margin-bottom: 0.55rem;
-}
-
-.post-content .footnotes p {
-  margin-bottom: 0.45rem;
-}
-
-.post-content .footnote-ref,
-.post-content .footnote-backref {
+.post-content a:hover {
+  color: #d2603a !important;
+  border-bottom-color: #d2603a;
   text-decoration: none;
 }
 
-.post-content .footnote-ref {
-  font-size: 0.82em;
-  vertical-align: super;
-  margin-left: 0.1em;
+.post-content a.img-link,
+.post-content a.popup {
+  border-bottom: none;
 }
 
-/* --------------------------------
- * Images / Figures
- * -------------------------------- */
+/* ------------------------------
+ * Lists
+ * ------------------------------ */
+.post-content ol:not([class]),
+.post-content ol.task-list,
+.post-content ul:not([class]),
+.post-content ul.task-list {
+  padding-inline-start: 1.75rem;
+}
+
+.post-content ol:not([class]) li,
+.post-content ol.task-list li,
+.post-content ul:not([class]) li,
+.post-content ul.task-list li {
+  margin: 0.25rem 0;
+  padding-left: 0.25rem;
+}
+
+.post-content ol:not([class]) ol,
+.post-content ol:not([class]) ul,
+.post-content ol.task-list ol,
+.post-content ol.task-list ul,
+.post-content ul:not([class]) ol,
+.post-content ul:not([class]) ul,
+.post-content ul.task-list ol,
+.post-content ul.task-list ul {
+  padding-inline-start: 1.25rem;
+  margin: 0.5rem 0;
+}
+
+.post-content ::marker {
+  color: var(--text-muted-color, #757575);
+}
+
+/* task list */
+.post-content ul.task-list {
+  padding-inline-start: 1.25rem;
+}
+
+.post-content ul.task-list li {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.post-content ul.task-list input[type="checkbox"] {
+  margin: 0 0.5rem 0.2rem -1.3rem;
+  vertical-align: middle;
+}
+
+/* description list */
+.post-content dl > dd {
+  margin-left: 1rem;
+}
+
+/* ------------------------------
+ * Images / Figure
+ * ------------------------------ */
 .post-content img {
-  display: block;
   max-width: 100%;
   height: auto;
-  margin: 1.5rem auto;
-  border-radius: 0.45rem;
+  transition: all 0.35s ease-in-out;
+  border-radius: 10px;
 }
 
 .post-content figure {
-  margin: 1.5rem 0;
+  margin: 1.25rem 0;
 }
 
-.post-content figcaption {
-  margin-top: 0.55rem;
-  color: #868e96;
-  font-size: 0.92rem;
+.post-content figcaption,
+.post-content a.popup + em,
+.post-content .embed-video + em,
+.post-content .embed-audio + em {
+  display: block;
   text-align: center;
+  font-style: normal;
+  font-size: 80%;
+  padding: 0;
+  color: #6d6c6c;
+  margin-top: 0.5rem;
 }
 
-/* --------------------------------
- * Utility image classes
- * -------------------------------- */
-.post-content .w-75 {
-  width: 75%;
-}
-
-.post-content .w-50 {
-  width: 50%;
-}
-
-.post-content .normal {
-  margin-left: 0;
-  margin-right: auto;
-}
-
+/* utility image classes */
 .post-content .left {
   float: left;
-  margin: 0 1rem 1rem 0;
+  margin: 0.75rem 1rem 1rem 0;
 }
 
 .post-content .right {
   float: right;
-  margin: 0 0 1rem 1rem;
-}
-
-.post-content .shadow {
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  margin: 0.75rem 0 1rem 1rem;
 }
 
 .post-content .rounded-10 {
-  border-radius: 10px;
+  border-radius: 10px !important;
 }
 
-.post-content .light {
-  display: block;
-}
-
-.post-content .dark {
-  display: none;
-}
-
-/* clearfix */
 .post-content::after {
   content: "";
   display: block;
   clear: both;
 }
 
-/* --------------------------------
- * Mobile
- * -------------------------------- */
-@media (max-width: 768px) {
+/* ------------------------------
+ * Blockquote
+ * ------------------------------ */
+.post-content blockquote {
+  border-left: 0.125rem solid var(--blockquote-border-color, #eeeeee);
+  padding-left: 1rem;
+  color: var(--blockquote-text-color, #757575);
+  margin-top: 0.5rem;
+}
+
+.post-content blockquote > p:last-child {
+  margin-bottom: 0;
+}
+
+/* prompt boxes */
+.post-content blockquote[class^="prompt-"] {
+  border-left: 0;
+  position: relative;
+  padding: 1rem 1rem 1rem 3rem;
+  color: var(--prompt-text-color, rgba(46, 46, 46, 0.77));
+  border-radius: 10px;
+}
+
+.post-content blockquote[class^="prompt-"]::before {
+  text-align: center;
+  width: 3rem;
+  position: absolute;
+  left: 0.25rem;
+  top: 1rem;
+  font-size: 1rem;
+  line-height: 1;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  font-family: "Font Awesome 6 Free";
+  font-weight: 900;
+}
+
+.post-content blockquote.prompt-tip {
+  background-color: var(--prompt-tip-bg, rgba(123, 247, 144, 0.2));
+}
+
+.post-content blockquote.prompt-tip::before {
+  content: "\f0eb";
+  color: var(--prompt-tip-icon-color, #03b303);
+  font-family: "Font Awesome 6 Free";
+  font-weight: 400;
+}
+
+.post-content blockquote.prompt-info {
+  background-color: var(--prompt-info-bg, #e1f5fe);
+}
+
+.post-content blockquote.prompt-info::before {
+  content: "\f06a";
+  color: var(--prompt-info-icon-color, #0070cb);
+  transform: rotate(180deg);
+}
+
+.post-content blockquote.prompt-warning {
+  background-color: var(--prompt-warning-bg, rgb(255, 243, 205));
+}
+
+.post-content blockquote.prompt-warning::before {
+  content: "\f06a";
+  color: var(--prompt-warning-icon-color, #ef9c03);
+}
+
+.post-content blockquote.prompt-danger {
+  background-color: var(--prompt-danger-bg, rgba(248, 215, 218, 0.56));
+}
+
+.post-content blockquote.prompt-danger::before {
+  content: "\f071";
+  color: var(--prompt-danger-icon-color, #df3c30);
+}
+
+.post-content blockquote code {
+  color: inherit;
+}
+
+/* ------------------------------
+ * Keyboard
+ * ------------------------------ */
+.post-content kbd {
+  font-family: Lato, sans-serif;
+  display: inline-block;
+  vertical-align: middle;
+  line-height: 1.3rem;
+  min-width: 1.75rem;
+  text-align: center;
+  margin: 0 0.3rem;
+  padding-top: 0.1rem;
+  color: var(--kbd-text-color, #34343c);
+  background-color: var(--kbd-bg-color, #fff);
+  border-radius: 6px;
+  border: solid 1px var(--kbd-wrap-color, #bdbdbd);
+  box-shadow: inset 0 -2px 0 var(--kbd-wrap-color, #bdbdbd);
+}
+
+/* ------------------------------
+ * Inline code
+ * ------------------------------ */
+.post-content code {
+  hyphens: none;
+  color: var(--code-color, #3a3a3a);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", monospace;
+}
+
+.post-content :not(pre) > code,
+.post-content code.highlighter-rouge {
+  font-size: 0.85rem;
+  padding: 3px 5px;
+  overflow-wrap: break-word;
+  border-radius: 6px;
+  background-color: var(--inline-code-bg, rgba(25, 25, 28, 0.05));
+}
+
+.post-content code.filepath {
+  background-color: inherit;
+  color: var(--filepath-text-color, var(--code-color, #3a3a3a));
+  font-weight: 600;
+  padding: 0;
+}
+
+/* ------------------------------
+ * Tables
+ * ------------------------------ */
+.post-content .table-wrapper {
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
+}
+
+.post-content table {
+  min-width: 100%;
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: collapse;
+  overflow-x: auto;
+  font-size: 95%;
+}
+
+.post-content table thead {
+  border-bottom: solid 2px rgba(210, 215, 217, 0.75);
+}
+
+.post-content table thead th,
+.post-content table tbody tr td {
+  padding: 0.4rem 1rem;
+}
+
+.post-content table tbody tr {
+  border-bottom: 1px solid var(--tb-border-color, #eaeaea);
+}
+
+.post-content table tbody tr:nth-child(2n) {
+  background-color: var(--tb-even-bg, #fff);
+}
+
+.post-content table tbody tr:nth-child(2n + 1) {
+  background-color: var(--tb-odd-bg, #fbfcfd);
+}
+
+/* ------------------------------
+ * Footnotes
+ * ------------------------------ */
+.post-content .footnotes > ol {
+  padding-left: 2rem;
+  margin-top: 0.5rem;
+}
+
+.post-content .footnotes > ol > li:not(:last-child) {
+  margin-bottom: 0.3rem;
+}
+
+.post-content .footnotes > ol > li > p {
+  margin-left: 0.25em;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.post-content a.footnote,
+.post-content .footnote-ref {
+  margin-left: 1px;
+  margin-right: 1px;
+  padding-left: 2px;
+  padding-right: 2px;
+  border-bottom-style: none !important;
+  text-decoration: none;
+}
+
+.post-content a.reversefootnote,
+.post-content .footnote-backref {
+  font-size: 0.6rem;
+  line-height: 1;
+  position: relative;
+  bottom: 0.25em;
+  margin-left: 0.25em;
+  border-bottom-style: none !important;
+  text-decoration: none;
+}
+
+.post-content sup:target,
+.post-content .footnotes > ol > li:target {
+  background-color: var(--footnote-target-bg, lightcyan);
+  width: fit-content;
+  transition: background-color 1.75s ease-in-out;
+}
+
+/* ------------------------------
+ * Code blocks (Astro/Shiki)
+ * ------------------------------ */
+.post-content pre,
+.post-content pre.astro-code {
+  margin: 1.2rem 0;
+  padding: 0.95rem 1rem;
+  overflow-x: auto;
+  border-radius: 10px;
+  background-color: var(--highlight-bg-color, #f6f8fa);
+  color: var(--highlighter-rouge-color, #3f596f);
+  box-shadow: var(--language-border-color, #ececec) 0 0 0 1px;
+  line-height: 1.4rem;
+  font-size: 0.85rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.post-content pre code,
+.post-content pre.astro-code code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  border-radius: 0;
+  font-size: inherit;
+  white-space: pre;
+  word-break: normal;
+}
+
+.post-content pre.astro-code .line {
+  display: block;
+}
+
+.post-content pre.astro-code .line.highlighted {
+  background-color: rgba(0, 0, 0, 0.04);
+  margin: 0 -1rem;
+  padding: 0 1rem;
+}
+
+/* If line numbers are enabled someday */
+.post-content pre.astro-code [data-line]::before {
+  user-select: none;
+  color: var(--highlight-lineno-color, #9e9e9e);
+}
+
+/* ------------------------------
+ * Mermaid / Math
+ * ------------------------------ */
+.post-content .mermaid {
+  text-align: center;
+}
+
+.post-content mjx-container {
+  overflow-y: hidden;
+  min-width: auto !important;
+}
+
+/* ------------------------------
+ * Responsive tweaks
+ * ------------------------------ */
+@media all and (max-width: 576px) {
+  .post-content blockquote[class^="prompt-"] {
+    margin-left: -1rem;
+    margin-right: -1rem;
+    border-radius: 0;
+    max-width: none;
+  }
+}
+
+@media all and (max-width: 768px) {
+  .post-content > p > img {
+    max-width: calc(100% + 1rem);
+  }
+}
+
+@media all and (min-width: 1200px) {
+  .post-content h2,
+  .post-content h3,
+  .post-content h4 {
+    scroll-margin-top: 2rem;
+  }
+}
+
+@media all and (min-width: 1200px) {
   .post-content {
-    font-size: 1rem;
-    line-height: 1.8;
-  }
-
-  .post-content h1 {
-    font-size: 1.85rem;
-  }
-
-  .post-content h2 {
-    font-size: 1.55rem;
-  }
-
-  .post-content h3 {
-    font-size: 1.3rem;
-  }
-
-  .post-content pre,
-  .post-content pre.astro-code {
-    padding: 0.9rem 0.95rem;
-    font-size: 0.88rem;
-    border-radius: 0.75rem;
-  }
-
-  .post-content table {
-    min-width: 100%;
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-
-  .post-content .w-75,
-  .post-content .w-50 {
-    width: 100%;
-  }
-
-  .post-content .left,
-  .post-content .right {
-    float: none;
-    margin: 1rem auto;
-  }
-
-  .post-content blockquote.prompt-tip,
-  .post-content blockquote.prompt-info,
-  .post-content blockquote.prompt-warning,
-  .post-content blockquote.prompt-danger {
-    padding: 0.95rem 0.95rem 0.95rem 2.9rem;
+    font-size: 1.03rem;
   }
 }
