@@ -55,6 +55,10 @@ import mainUrl from "../scripts/js/main.js?url";
       href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
       rel="stylesheet"
     />
+    <link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+/>
   </head>
 
   <body class="index-page">
@@ -216,6 +220,139 @@ import mainUrl from "../scripts/js/main.js?url";
           setTimeout(() => {
             copyBtn.classList.remove("copied");
             copyIcon.className = "bi bi-clipboard";
+          }, 1500);
+        } catch (e) {
+          console.error(e);
+        }
+      });
+
+      pre.parentNode?.insertBefore(wrapper, pre);
+      wrapper.appendChild(header);
+      header.appendChild(start);
+      header.appendChild(label);
+      header.appendChild(copyBtn);
+      wrapper.appendChild(pre);
+    });
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initChirpyCodeBlocks, { once: true });
+  } else {
+    initChirpyCodeBlocks();
+  }
+</script>
+<script is:inline>
+  const normalizeLangLabel = (lang) => {
+    if (!lang) return "Plaintext";
+
+    const map = {
+      js: "JavaScript",
+      ts: "TypeScript",
+      jsx: "JSX",
+      tsx: "TSX",
+      sh: "Shell",
+      bash: "Shell",
+      zsh: "Shell",
+      shell: "Shell",
+      plaintext: "Plaintext",
+      text: "Plaintext",
+      md: "Markdown",
+      yml: "YAML",
+      yaml: "YAML",
+      py: "Python",
+      html: "HTML",
+      css: "CSS",
+      json: "JSON",
+      xml: "XML",
+      sql: "SQL",
+    };
+
+    const lowered = lang.toLowerCase();
+    return map[lowered] || lowered.charAt(0).toUpperCase() + lowered.slice(1);
+  };
+
+  const detectFilenameFromNextNode = (pre) => {
+    const next = pre.nextElementSibling;
+    if (!next) return null;
+
+    if (
+      next.tagName === "P" &&
+      next.textContent &&
+      next.textContent.trim().startsWith("{:") &&
+      next.textContent.includes("file=")
+    ) {
+      const match = next.textContent.match(/file=['"]([^'"]+)['"]/);
+      if (match?.[1]) {
+        next.remove();
+        return match[1];
+      }
+    }
+
+    return null;
+  };
+
+  const initChirpyCodeBlocks = () => {
+    document.querySelectorAll(".post-content pre").forEach((pre) => {
+      if (pre.closest(".code-block")) return;
+
+      const code = pre.querySelector("code");
+      if (!code) return;
+
+      const rawLang =
+        pre.getAttribute("data-language") ||
+        code.getAttribute("data-language") ||
+        [...pre.classList].find((c) => c.startsWith("language-"))?.replace("language-", "") ||
+        [...code.classList].find((c) => c.startsWith("language-"))?.replace("language-", "") ||
+        "plaintext";
+
+      const langLabel = normalizeLangLabel(rawLang);
+      const filename = detectFilenameFromNextNode(pre);
+
+      const wrapper = document.createElement("div");
+      wrapper.className = "code-block";
+      if (filename) wrapper.setAttribute("data-file", filename);
+      wrapper.setAttribute("data-lang", rawLang.toLowerCase());
+
+      const header = document.createElement("div");
+      header.className = "code-header";
+
+      const start = document.createElement("span");
+      start.className = "code-header-start";
+      start.setAttribute("aria-hidden", "true");
+
+      const label = document.createElement("span");
+      label.className = "code-label";
+
+      const labelIcon = document.createElement("i");
+      labelIcon.className = filename ? "fa-regular fa-file-code" : "fa-solid fa-code";
+      labelIcon.setAttribute("aria-hidden", "true");
+
+      const labelText = document.createElement("span");
+      labelText.className = "code-label-text";
+      labelText.textContent = filename || langLabel;
+
+      label.appendChild(labelIcon);
+      label.appendChild(labelText);
+
+      const copyBtn = document.createElement("button");
+      copyBtn.type = "button";
+      copyBtn.className = "code-copy-btn";
+      copyBtn.setAttribute("aria-label", "Copy code");
+
+      const copyIcon = document.createElement("i");
+      copyIcon.className = "fa-regular fa-copy";
+      copyIcon.setAttribute("aria-hidden", "true");
+      copyBtn.appendChild(copyIcon);
+
+      copyBtn.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(code.innerText);
+          copyBtn.classList.add("copied");
+          copyIcon.className = "fa-solid fa-check";
+
+          setTimeout(() => {
+            copyBtn.classList.remove("copied");
+            copyIcon.className = "fa-regular fa-copy";
           }, 1500);
         } catch (e) {
           console.error(e);
