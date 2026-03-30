@@ -116,90 +116,123 @@ import mainUrl from "../scripts/js/main.js?url";
       }
     </script>
     <script is:inline>
+  const normalizeLangLabel = (lang) => {
+    if (!lang) return "Plaintext";
+    const map = {
+      js: "JavaScript",
+      ts: "TypeScript",
+      sh: "Shell",
+      bash: "Shell",
+      zsh: "Shell",
+      shell: "Shell",
+      plaintext: "Plaintext",
+      text: "Plaintext",
+      md: "Markdown",
+      yml: "YAML",
+    };
+    const lowered = lang.toLowerCase();
+    return map[lowered] || lowered.charAt(0).toUpperCase() + lowered.slice(1);
+  };
+
+  const detectFilenameFromNextNode = (pre) => {
+    const next = pre.nextElementSibling;
+    if (!next) return null;
+
+    if (
+      next.tagName === "P" &&
+      next.textContent &&
+      next.textContent.trim().startsWith("{:") &&
+      next.textContent.includes("file=")
+    ) {
+      const match = next.textContent.match(/file=['"]([^'"]+)['"]/);
+      if (match?.[1]) {
+        next.remove();
+        return match[1];
+      }
+    }
+
+    return null;
+  };
+
   const initChirpyCodeBlocks = () => {
-    const containers = document.querySelectorAll(".post-content");
+    document.querySelectorAll(".post-content pre").forEach((pre) => {
+      if (pre.closest(".code-block")) return;
 
-    containers.forEach((container) => {
-      const pres = container.querySelectorAll("pre");
+      const code = pre.querySelector("code");
+      if (!code) return;
 
-      pres.forEach((pre) => {
-        if (pre.closest(".code-block")) return;
+      const rawLang =
+        pre.getAttribute("data-language") ||
+        code.getAttribute("data-language") ||
+        [...pre.classList].find((c) => c.startsWith("language-"))?.replace("language-", "") ||
+        [...code.classList].find((c) => c.startsWith("language-"))?.replace("language-", "") ||
+        "plaintext";
 
-        const code = pre.querySelector("code");
-        if (!code) return;
+      const langLabel = normalizeLangLabel(rawLang);
+      const filename = detectFilenameFromNextNode(pre);
 
-        const language =
-          pre.getAttribute("data-language") ||
-          code.getAttribute("data-language") ||
-          [...pre.classList]
-            .find((cls) => cls.startsWith("language-"))
-            ?.replace("language-", "") ||
-          [...code.classList]
-            .find((cls) => cls.startsWith("language-"))
-            ?.replace("language-", "") ||
-          "text";
+      const wrapper = document.createElement("div");
+      wrapper.className = "code-block";
+      if (filename) wrapper.setAttribute("data-file", filename);
+      wrapper.setAttribute("data-lang", rawLang.toLowerCase());
 
-        const wrapper = document.createElement("div");
-        wrapper.className = "code-block";
+      const header = document.createElement("div");
+      header.className = "code-header";
 
-        const header = document.createElement("div");
-        header.className = "code-header";
+      const start = document.createElement("span");
+      start.className = "code-header-start";
+      start.setAttribute("aria-hidden", "true");
 
-        const headerLeft = document.createElement("div");
-        headerLeft.className = "code-header-left";
+      const label = document.createElement("span");
+      label.className = "code-label";
 
-        const dots = document.createElement("span");
-        dots.className = "code-dots";
-        dots.setAttribute("aria-hidden", "true");
+      const labelIcon = document.createElement("i");
+      labelIcon.className = filename ? "bi bi-file-earmark-code" : "bi bi-code-slash";
+      labelIcon.setAttribute("aria-hidden", "true");
 
-        const label = document.createElement("span");
-        label.className = "code-lang";
-        label.textContent = language;
+      const labelText = document.createElement("span");
+      labelText.className = "code-label-text";
+      labelText.textContent = filename || langLabel;
 
-        headerLeft.appendChild(dots);
-        headerLeft.appendChild(label);
+      label.appendChild(labelIcon);
+      label.appendChild(labelText);
 
-        const copyBtn = document.createElement("button");
-        copyBtn.type = "button";
-        copyBtn.className = "code-copy-btn";
-        copyBtn.setAttribute("aria-label", "Copy code");
-        copyBtn.textContent = "Copy";
+      const copyBtn = document.createElement("button");
+      copyBtn.type = "button";
+      copyBtn.className = "code-copy-btn";
+      copyBtn.setAttribute("aria-label", "Copy code");
 
-        copyBtn.addEventListener("click", async () => {
-          try {
-            const text = code.innerText;
-            await navigator.clipboard.writeText(text);
-            copyBtn.textContent = "Copied";
-            copyBtn.classList.add("copied");
+      const copyIcon = document.createElement("i");
+      copyIcon.className = "bi bi-clipboard";
+      copyIcon.setAttribute("aria-hidden", "true");
+      copyBtn.appendChild(copyIcon);
 
-            window.setTimeout(() => {
-              copyBtn.textContent = "Copy";
-              copyBtn.classList.remove("copied");
-            }, 1600);
-          } catch (err) {
-            console.error("Failed to copy code:", err);
-            copyBtn.textContent = "Failed";
+      copyBtn.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(code.innerText);
+          copyBtn.classList.add("copied");
+          copyIcon.className = "bi bi-clipboard-check";
 
-            window.setTimeout(() => {
-              copyBtn.textContent = "Copy";
-            }, 1600);
-          }
-        });
-
-        header.appendChild(headerLeft);
-        header.appendChild(copyBtn);
-
-        pre.parentNode?.insertBefore(wrapper, pre);
-        wrapper.appendChild(header);
-        wrapper.appendChild(pre);
+          setTimeout(() => {
+            copyBtn.classList.remove("copied");
+            copyIcon.className = "bi bi-clipboard";
+          }, 1500);
+        } catch (e) {
+          console.error(e);
+        }
       });
+
+      pre.parentNode?.insertBefore(wrapper, pre);
+      wrapper.appendChild(header);
+      header.appendChild(start);
+      header.appendChild(label);
+      header.appendChild(copyBtn);
+      wrapper.appendChild(pre);
     });
   };
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initChirpyCodeBlocks, {
-      once: true,
-    });
+    document.addEventListener("DOMContentLoaded", initChirpyCodeBlocks, { once: true });
   } else {
     initChirpyCodeBlocks();
   }
