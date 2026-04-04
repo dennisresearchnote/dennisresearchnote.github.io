@@ -3,8 +3,8 @@ description: Security research blog
 lang: ko-KR
 timezone: Asia/Seoul
 
-url: "dennisresearchnote.github.io"
-baseurl: "/dennisresearchnote"
+url: "https://dennisresearchnote.github.io"
+baseurl: ""
 
 markdown: kramdown
 highlighter: rouge
