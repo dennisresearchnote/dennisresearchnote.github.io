@@ -4,7 +4,7 @@ lang: ko-KR
 timezone: Asia/Seoul
 
 url: "dennisresearchnote.github.io"
-baseurl: "dennisresearchnote.github.io"
+baseurl: "/dennisresearchnote"
 
 markdown: kramdown
 highlighter: rouge
