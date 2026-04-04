@@ -1,0 +1,11 @@
+title: Dennis Research Note
+description: Security research blog
+lang: ko-KR
+timezone: Asia/Seoul
+
+url: "dennisresearchnote.github.io"
+baseurl: "dennisresearchnote.github.io"
+
+markdown: kramdown
+highlighter: rouge
+permalink: /blog/:categories/:title/
