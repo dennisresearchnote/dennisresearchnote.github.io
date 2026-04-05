@@ -38,7 +38,64 @@
         <li><a href="{{ '/services/' | relative_url }}">Services</a></li>
         <li><a href="{{ '/portfolio/' | relative_url }}">Portfolio</a></li>
         <li><a href="{{ '/pricing/' | relative_url }}">Pricing</a></li>
-        <li><a href="{{ '/blog/' | relative_url }}">Blog</a></li>
+
+        {% assign top_categories = "" | split: "" %}
+        {% for post in site.posts %}
+          {% assign cats = post.categories %}
+          {% if cats and cats.size > 0 %}
+            {% assign top = cats[0] %}
+            {% unless top_categories contains top %}
+              {% assign top_categories = top_categories | push: top %}
+            {% endunless %}
+          {% endif %}
+        {% endfor %}
+
+        <li class="dropdown">
+          <a href="{{ '/blog/' | relative_url }}">
+            <span>Blog</span>
+            <i class="bi bi-chevron-down toggle-dropdown"></i>
+          </a>
+          <ul>
+            {% for top in top_categories %}
+              {% assign sub_categories = "" | split: "" %}
+
+              {% for post in site.posts %}
+                {% assign cats = post.categories %}
+                {% if cats and cats.size > 0 and cats[0] == top %}
+                  {% if cats.size > 1 %}
+                    {% assign sub = cats[1] %}
+                    {% unless sub_categories contains sub %}
+                      {% assign sub_categories = sub_categories | push: sub %}
+                    {% endunless %}
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+
+              {% if sub_categories.size > 0 %}
+                <li class="dropdown">
+                  <a href="{{ '/blog/' | append: top | append: '/' | relative_url }}">
+                    <span>{{ top }}</span>
+                    <i class="bi bi-chevron-down toggle-dropdown"></i>
+                  </a>
+                  <ul>
+                    {% for sub in sub_categories %}
+                      <li>
+                        <a href="{{ '/blog/' | append: top | append: '/' | append: sub | append: '/' | relative_url }}">
+                          {{ sub }}
+                        </a>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                </li>
+              {% else %}
+                <li>
+                  <a href="{{ '/blog/' | append: top | append: '/' | relative_url }}">{{ top }}</a>
+                </li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </li>
+
         <li><a href="{{ '/contact/' | relative_url }}">Contact</a></li>
       </ul>
 
