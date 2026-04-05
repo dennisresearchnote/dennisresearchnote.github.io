@@ -27,6 +27,9 @@ jobs:
           ruby-version: "3.2"
           bundler-cache: true
 
+      - name: Generate category pages
+        run: ruby scripts/generate_category_pages.rb
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
