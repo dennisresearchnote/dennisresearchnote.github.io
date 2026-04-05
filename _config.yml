@@ -8,4 +8,5 @@ baseurl: ""
 
 markdown: kramdown
 highlighter: rouge
-permalink: /blog/:categories/:title/
+
+permalink: /post/:categories/:title/
