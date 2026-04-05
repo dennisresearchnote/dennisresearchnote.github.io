@@ -1,4 +1,5 @@
 ---
+layout: blog-details
 title: Text and Typography
 description: Examples of text, typography, math equations, diagrams, flowcharts, pictures, videos, and more.
 author: cotes
