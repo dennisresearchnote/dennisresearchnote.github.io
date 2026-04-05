@@ -10,7 +10,7 @@
     <nav id="navmenu" class="navmenu">
       <ul>
         <li><a href="{{ '/#hero' | relative_url }}" class="active">Home</a></li>
-
+        <!--
         <li class="dropdown">
           <a href="{{ '/about/' | relative_url }}">
             <span>About</span>
@@ -34,11 +34,11 @@
             </li>
           </ul>
         </li>
-
+        
         <li><a href="{{ '/services/' | relative_url }}">Services</a></li>
         <li><a href="{{ '/portfolio/' | relative_url }}">Portfolio</a></li>
         <li><a href="{{ '/pricing/' | relative_url }}">Pricing</a></li>
-
+        -->
         {% assign top_categories = "" | split: "" %}
         {% for post in site.posts %}
           {% assign cats = post.categories %}
