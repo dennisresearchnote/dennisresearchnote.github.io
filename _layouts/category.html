@@ -9,10 +9,10 @@ body_class: blog-page
     <nav class="breadcrumbs">
       <ol>
         <li><a href="{{ '/' | relative_url }}">Home</a></li>
-        <li><a href="{{ '/blog/' | relative_url }}">Blog</a></li>
+        <li><a href="{{ '/' | relative_url }}">Blog</a></li>
         {% if page.category_name %}
           <li>
-            <a href="{{ '/blog/' | append: page.category_name | append: '/' | relative_url }}">
+            <a href="{{ '/' | append: page.category_name | append: '/' | relative_url }}">
               {{ page.category_name }}
             </a>
           </li>

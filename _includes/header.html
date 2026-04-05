@@ -67,14 +67,14 @@
 
           {% if sub_categories.size > 0 %}
             <li class="dropdown">
-              <a href="{{ '/blog/' | append: top | append: '/' | relative_url }}">
+              <a href="{{ '/' | append: top | append: '/' | relative_url }}">
                 <span>{{ top }}</span>
                 <i class="bi bi-chevron-down toggle-dropdown"></i>
               </a>
               <ul>
                 {% for sub in sub_categories %}
                   <li>
-                    <a href="{{ '/blog/' | append: top | append: '/' | append: sub | append: '/' | relative_url }}">
+                    <a href="{{ '/' | append: top | append: '/' | append: sub | append: '/' | relative_url }}">
                       {{ sub }}
                     </a>
                   </li>
@@ -83,7 +83,7 @@
             </li>
           {% else %}
             <li>
-              <a href="{{ '/blog/' | append: top | append: '/' | relative_url }}">{{ top }}</a>
+              <a href="{{ '/' | append: top | append: '/' | relative_url }}">{{ top }}</a>
             </li>
           {% endif %}
         {% endfor %}

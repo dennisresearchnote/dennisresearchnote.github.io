@@ -11,10 +11,10 @@ body_class: blog-details-page
       <ol>
         <li><a href="{{ '/' | relative_url }}">Home</a></li>
         {% if page.categories and page.categories.size > 0 %}
-          <li><a href="{{ '/blog/' | append: page.categories[0] | append: '/' | relative_url }}">{{ page.categories[0] }}</a></li>
+          <li><a href="{{ '/' | append: page.categories[0] | append: '/' | relative_url }}">{{ page.categories[0] }}</a></li>
         {% endif %}
         {% if page.categories and page.categories.size > 1 %}
-          <li><a href="{{ '/blog/' | append: page.categories[0] | append: '/' | append: page.categories[1] | append: '/' | relative_url }}">{{ page.categories[1] }}</a></li>
+          <li><a href="{{ '/' | append: page.categories[0] | append: '/' | append: page.categories[1] | append: '/' | relative_url }}">{{ page.categories[1] }}</a></li>
         {% endif %}
         <li class="current">{{ page.title }}</li>
       </ol>
