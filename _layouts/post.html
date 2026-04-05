@@ -81,14 +81,14 @@ body_class: blog-details-page
               <ul class="cats">
                 {% if page.categories.size > 0 %}
                 <li>
-                  <a href="{{ '/blog/' | append: page.categories[0] | append: '/' | relative_url }}">
+                  <a href="{{ '/' | append: page.categories[0] | append: '/' | relative_url }}">
                     {{ page.categories[0] }}
                   </a>
                 </li>
                 {% endif %}
                 {% if page.categories.size > 1 %}
                 <li>
-                  <a href="{{ '/blog/' | append: page.categories[0] | append: '/' | append: page.categories[1] | append: '/' | relative_url }}">
+                  <a href="{{ '/' | append: page.categories[0] | append: '/' | append: page.categories[1] | append: '/' | relative_url }}">
                     {{ page.categories[1] }}
                   </a>
                 </li>
@@ -134,7 +134,7 @@ body_class: blog-details-page
             {% assign sorted_categories = site.categories | sort %}
             {% for category in sorted_categories %}
             <li>
-              <a href="{{ '/blog/' | append: category[0] | append: '/' | relative_url }}">
+              <a href="{{ '/' | append: category[0] | append: '/' | relative_url }}">
                 {{ category[0] }} <span>({{ category[1].size }})</span>
               </a>
             </li>

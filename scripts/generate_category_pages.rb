@@ -6,7 +6,7 @@ require "date"
 
 ROOT = File.expand_path("..", __dir__)
 POSTS_DIR = File.join(ROOT, "_posts")
-BLOG_DIR = File.join(ROOT, "blog")
+CATEGORY_ROOT = ROOT
 
 def extract_front_matter(path)
   content = File.read(path, encoding: "utf-8")
@@ -40,15 +40,15 @@ end
 # blog/index.html은 건드리지 않음
 # 자동 생성 대상은 blog/<top>/index.html, blog/<top>/<sub>/index.html
 # 기존 자동 생성 결과만 정리
-Dir.glob(File.join(BLOG_DIR, "*", "index.html")).each do |path|
+Dir.glob(File.join(CATEGORY_ROOT, "*", "index.html")).each do |path|
   File.delete(path) if File.file?(path)
 end
 
-Dir.glob(File.join(BLOG_DIR, "*", "*", "index.html")).each do |path|
+Dir.glob(File.join(CATEGORY_ROOT, "*", "*", "index.html")).each do |path|
   File.delete(path) if File.file?(path)
 end
 
-Dir.glob(File.join(BLOG_DIR, "*")).each do |path|
+Dir.glob(File.join(CATEGORY_ROOT, "*")).each do |path|
   next unless File.directory?(path)
   next if File.basename(path).start_with?(".")
   next if File.basename(path) == "assets"
@@ -83,11 +83,11 @@ category_tree.keys.sort.each do |top|
     layout: category
     title: #{top}
     category_name: #{top}
-    permalink: /blog/#{top}/
+    permalink: /#{top}/
     ---
   HTML
 
-  write_page(File.join(BLOG_DIR, top, "index.html"), top_page)
+  write_page(File.join(CATEGORY_ROOT, top, "index.html"), top_page)
 
   category_tree[top].compact.sort.each do |sub|
     sub_page = <<~HTML
@@ -96,18 +96,18 @@ category_tree.keys.sort.each do |top|
       title: #{sub}
       category_name: #{top}
       subcategory_name: #{sub}
-      permalink: /blog/#{top}/#{sub}/
+      permalink: /#{top}/#{sub}/
       ---
     HTML
 
-    write_page(File.join(BLOG_DIR, top, sub, "index.html"), sub_page)
+    write_page(File.join(CATEGORY_ROOT, top, sub, "index.html"), sub_page)
   end
 end
 
 puts "Generated category pages:"
 category_tree.keys.sort.each do |top|
-  puts "  /blog/#{top}/"
+  puts "  /#{top}/"
   category_tree[top].compact.sort.each do |sub|
-    puts "  /blog/#{top}/#{sub}/"
+    puts "  /#{top}/#{sub}/"
   end
 end
