@@ -7,9 +7,9 @@ body_class: blog-page
   <div class="container d-lg-flex justify-content-between align-items-center">
     <h1 class="mb-2 mb-lg-0">
       {% if page.subcategory_name %}
-      {{ page.category_name }} / {{ page.subcategory_name }}
+        {{ page.category_name }} / {{ page.subcategory_name }}
       {% else %}
-      {{ page.category_name }}
+        {{ page.category_name }}
       {% endif %}
     </h1>
     <nav class="breadcrumbs">
@@ -17,14 +17,14 @@ body_class: blog-page
         <li><a href="{{ '/' | relative_url }}">Home</a></li>
         <li><a href="{{ '/blog/' | relative_url }}">Blog</a></li>
         {% if page.category_name %}
-        <li>
-          <a href="{{ '/blog/' | append: page.category_name | append: '/' | relative_url }}">
-            {{ page.category_name }}
-          </a>
-        </li>
+          <li>
+            <a href="{{ '/blog/' | append: page.category_name | append: '/' | relative_url }}">
+              {{ page.category_name }}
+            </a>
+          </li>
         {% endif %}
         {% if page.subcategory_name %}
-        <li class="current">{{ page.subcategory_name }}</li>
+          <li class="current">{{ page.subcategory_name }}</li>
         {% endif %}
       </ol>
     </nav>
@@ -42,76 +42,74 @@ body_class: blog-page
             {% assign matched_count = 0 %}
 
             {% for post in site.posts %}
-            {% assign match = false %}
+              {% assign match = false %}
 
-            {% if page.subcategory_name %}
-            {% if post.categories.size > 1 and post.categories[0] == page.category_name and post.categories[1] ==
-            page.subcategory_name %}
-            {% assign match = true %}
-            {% endif %}
-            {% else %}
-            {% if post.categories.size > 0 and post.categories[0] == page.category_name %}
-            {% assign match = true %}
-            {% endif %}
-            {% endif %}
-
-            {% if match %}
-            {% assign matched_count = matched_count | plus: 1 %}
-            <div class="col-lg-12">
-              <article>
-
-                {% if post.image %}
-                <div class="post-img">
-                  {% if post.image.path %}
-                  <img src="{{ post.image.path | relative_url }}" alt="{{ post.image.alt | default: post.title }}"
-                    class="img-fluid">
-                  {% else %}
-                  <img src="{{ post.image | relative_url }}" alt="{{ post.title }}" class="img-fluid">
-                  {% endif %}
-                </div>
+              {% if page.subcategory_name %}
+                {% if post.categories.size > 1 and post.categories[0] == page.category_name and post.categories[1] == page.subcategory_name %}
+                  {% assign match = true %}
                 {% endif %}
+              {% else %}
+                {% if post.categories.size > 0 and post.categories[0] == page.category_name %}
+                  {% assign match = true %}
+                {% endif %}
+              {% endif %}
 
-                <h2 class="title">
-                  <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-                </h2>
+              {% if match %}
+                {% assign matched_count = matched_count | plus: 1 %}
+                <div class="col-lg-12">
+                  <article>
 
-                <div class="meta-top">
-                  <ul>
-                    {% if post.author %}
-                    <li class="d-flex align-items-center">
-                      <i class="bi bi-person"></i>
-                      <span>{{ post.author }}</span>
-                    </li>
+                    {% if post.image %}
+                    <div class="post-img">
+                      {% if post.image.path %}
+                        <img src="{{ post.image.path | relative_url }}" alt="{{ post.image.alt | default: post.title }}" class="img-fluid">
+                      {% else %}
+                        <img src="{{ post.image | relative_url }}" alt="{{ post.title }}" class="img-fluid">
+                      {% endif %}
+                    </div>
                     {% endif %}
 
-                    {% if post.date %}
-                    <li class="d-flex align-items-center">
-                      <i class="bi bi-clock"></i>
-                      <a href="{{ post.url | relative_url }}">
-                        <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %-d, %Y" }}</time>
-                      </a>
-                    </li>
-                    {% endif %}
-                  </ul>
+                    <h2 class="title">
+                      <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+                    </h2>
+
+                    <div class="meta-top">
+                      <ul>
+                        {% if post.author %}
+                        <li class="d-flex align-items-center">
+                          <i class="bi bi-person"></i>
+                          <span>{{ post.author }}</span>
+                        </li>
+                        {% endif %}
+
+                        {% if post.date %}
+                        <li class="d-flex align-items-center">
+                          <i class="bi bi-clock"></i>
+                          <a href="{{ post.url | relative_url }}">
+                            <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %-d, %Y" }}</time>
+                          </a>
+                        </li>
+                        {% endif %}
+                      </ul>
+                    </div>
+
+                    <div class="content">
+                      <p>
+                        {% if post.excerpt %}
+                          {{ post.excerpt | strip_html | truncate: 220 }}
+                        {% else %}
+                          {{ post.content | strip_html | truncate: 220 }}
+                        {% endif %}
+                      </p>
+
+                      <div class="read-more">
+                        <a href="{{ post.url | relative_url }}">Read More</a>
+                      </div>
+                    </div>
+
+                  </article>
                 </div>
-
-                <div class="content">
-                  <p>
-                    {% if post.excerpt %}
-                    {{ post.excerpt | strip_html | truncate: 220 }}
-                    {% else %}
-                    {{ post.content | strip_html | truncate: 220 }}
-                    {% endif %}
-                  </p>
-
-                  <div class="read-more">
-                    <a href="{{ post.url | relative_url }}">Read More</a>
-                  </div>
-                </div>
-
-              </article>
-            </div>
-            {% endif %}
+              {% endif %}
             {% endfor %}
 
             {% if matched_count == 0 %}
@@ -146,8 +144,7 @@ body_class: blog-page
         </div>
 
       </div>
-    </div>
-    <div class="col-lg-4 sidebar">
+          <div class="col-lg-4 sidebar">
 
       <div class="widgets-container">
 
@@ -182,11 +179,11 @@ body_class: blog-page
           {% for post in site.posts limit:5 %}
           <div class="post-item">
             {% if post.image %}
-            {% if post.image.path %}
-            <img src="{{ post.image.path | relative_url }}" alt="{{ post.title }}" class="flex-shrink-0">
-            {% else %}
-            <img src="{{ post.image | relative_url }}" alt="{{ post.title }}" class="flex-shrink-0">
-            {% endif %}
+              {% if post.image.path %}
+                <img src="{{ post.image.path | relative_url }}" alt="{{ post.title }}" class="flex-shrink-0">
+              {% else %}
+                <img src="{{ post.image | relative_url }}" alt="{{ post.title }}" class="flex-shrink-0">
+              {% endif %}
             {% endif %}
             <div>
               <h4><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h4>
@@ -210,5 +207,7 @@ body_class: blog-page
       </div>
 
     </div>
+    </div>
+
   </div>
 </div>
