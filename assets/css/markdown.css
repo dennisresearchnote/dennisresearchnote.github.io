@@ -88,9 +88,7 @@ h5 .anchor {
 }
 
 .table-wrapper>table thead th,
-.table-wrapper>table tbody tr td,
-.content table thead th,
-.content table tbody tr td {
+.table-wrapper>table tbody tr td {
     padding: .4rem 1rem;
     font-size: 95%;
     white-space: nowrap
@@ -1673,9 +1671,7 @@ body {
 }
 
 @media all and (min-width: 850px) {
-
-    .content .table-wrapper>table,
-    .content>table {
+    .content .table-wrapper>table {
         min-width: 70%
     }
 }
@@ -2138,38 +2134,30 @@ a.reversefootnote {
     border-bottom-style: none !important
 }
 
-.table-wrapper,
-.content>table {
+.table-wrapper {
     overflow-x: auto;
-    margin-bottom: 1.5rem;
-    display: block;
-    width: 100%
+    margin-bottom: 1.5rem
 }
 
-.table-wrapper>table,
-.content>table {
+.table-wrapper>table {
     min-width: 100%;
     overflow-x: auto;
     border-spacing: 0
 }
 
-.table-wrapper>table thead,
-.content>table thead {
+.table-wrapper>table thead {
     border-bottom: solid 2px rgba(210, 215, 217, .75)
 }
 
-.table-wrapper>table tbody tr,
-.content>table tbody tr {
+.table-wrapper>table tbody tr {
     border-bottom: 1px solid var(--tb-border-color)
 }
 
-.table-wrapper>table tbody tr:nth-child(2n),
-.content>table tbody tr:nth-child(2n) {
+.table-wrapper>table tbody tr:nth-child(2n) {
     background-color: var(--tb-even-bg)
 }
 
-.table-wrapper>table tbody tr:nth-child(2n+1),
-.content>table tbody tr:nth-child(2n+1) {
+.table-wrapper>table tbody tr:nth-child(2n+1) {
     background-color: var(--tb-odd-bg)
 }
 
