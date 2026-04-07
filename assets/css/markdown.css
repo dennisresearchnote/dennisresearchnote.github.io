@@ -1,10 +1,7 @@
-/* =========================================================
-   Chirpy markdown-only extract
-   source base: _site/assets/css/jekyll-theme-chirpy.css
-   adapted only for scope + local variable fallback
-   ========================================================= */
+/* Chirpy markdown extract scoped to current post body */
 
 .blog-details .content {
+  --main-border-color: #f3f3f3;
   --text-color: #34343c;
   --text-muted-color: #757575;
   --text-muted-highlight-color: inherit;
@@ -14,62 +11,27 @@
   --blockquote-text-color: #757575;
   --link-color: #0056b2;
   --link-underline-color: #dee2e6;
-  --main-border-color: #f3f3f3;
   --tb-odd-bg: #fbfcfd;
   --tb-border-color: #eaeaea;
   --footnote-target-bg: lightcyan;
+  --language-border-color: #ececec;
   --highlight-bg-color: #f6f8fa;
   --highlighter-rouge-color: #3f596f;
   --inline-code-bg: rgb(25 25 28 / 5%);
   --code-color: #3a3a3a;
+  --filepath-text-color: #6c757d;
   --kbd-wrap-color: #bdbdbd;
   --kbd-text-color: var(--text-color);
   --kbd-bg-color: #fff;
+  --code-header-text-color: #a3a3a3;
+  --code-header-muted-color: #e5e5e5;
+  --code-header-icon-color: #c9c8c8;
+
   color: var(--text-color);
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
 
-/* headings */
-.blog-details .content h1,
-.blog-details .content h2,
-.blog-details .content h3,
-.blog-details .content h4,
-.blog-details .content h5 {
-  color: var(--heading-color);
-  font-weight: 400;
-  font-family: Lato, "Microsoft Yahei", sans-serif;
-  scroll-margin-top: 3.5rem;
-}
-
-.blog-details .content h2 .anchor,
-.blog-details .content h3 .anchor,
-.blog-details .content h4 .anchor,
-.blog-details .content h5 .anchor {
-  font-size: 80%;
-}
-
-@media (hover: hover) {
-  .blog-details .content h2 .anchor,
-  .blog-details .content h3 .anchor,
-  .blog-details .content h4 .anchor,
-  .blog-details .content h5 .anchor {
-    visibility: hidden;
-    opacity: 0;
-    transition: opacity 0.25s ease-in, visibility 0s ease-in 0.25s;
-  }
-
-  .blog-details .content h2:hover .anchor,
-  .blog-details .content h3:hover .anchor,
-  .blog-details .content h4:hover .anchor,
-  .blog-details .content h5:hover .anchor {
-    visibility: visible;
-    opacity: 1;
-    transition: opacity 0.25s ease-in, visibility 0s ease-in 0s;
-  }
-}
-
-/* links */
 .blog-details .content a:not(.img-link) {
   color: var(--link-color);
   border-bottom: 1px solid var(--link-underline-color);
@@ -83,10 +45,13 @@
 }
 
 .blog-details .content a.popup {
+  -webkit-user-select: none;
   user-select: none;
 }
 
-.blog-details .content a.popup + em {
+.blog-details .content a.popup + em,
+.blog-details .content .embed-video + em,
+.blog-details .content .embed-audio + em {
   display: block;
   text-align: center;
   font-style: normal;
@@ -95,43 +60,40 @@
   color: #6d6c6c;
 }
 
-/* blockquote */
+.blog-details .content h1,
+.blog-details .content h2,
+.blog-details .content h3,
+.blog-details .content h4,
+.blog-details .content h5 {
+  color: var(--heading-color);
+}
+
 .blog-details .content blockquote {
-  padding: 0.5rem 1rem;
   color: var(--blockquote-text-color);
   border-left: 5px solid var(--blockquote-border-color);
+  padding: 0.5rem 1rem;
 }
 
 .blog-details .content blockquote > p {
   margin: 0;
 }
 
-/* inline code */
-.blog-details .content code.highlighter-rouge {
-  padding: 0.1em 0.3em;
-  border-radius: 0.25rem;
-  color: var(--highlighter-rouge-color);
-  background-color: var(--inline-code-bg);
-  font-size: 0.95em;
+.blog-details .content sup:target,
+.blog-details .content .footnotes > ol > li:target {
+  background-color: var(--footnote-target-bg);
+  width: fit-content;
+  transition: background-color 1.75s ease-in-out;
 }
 
-.blog-details .content code.filepath {
-  background-color: inherit;
-  padding: 0;
-  border: none;
-  border-radius: 0;
-}
-
-.blog-details .content code {
-  color: var(--code-color);
-}
-
-/* code block */
 .blog-details .content .highlight,
 .blog-details .content figure.highlight,
 .blog-details .content div[class^="language-"] {
   background-color: var(--highlight-bg-color);
   border-radius: 10px;
+}
+
+.blog-details .content div[class^="language-"] {
+  box-shadow: var(--language-border-color) 0 0 0 1px;
 }
 
 .blog-details .content div.highlighter-rouge {
@@ -157,21 +119,62 @@
   tab-size: 2;
 }
 
-/* rouge line number support */
 .blog-details .content td.rouge-code {
   padding-left: 1rem;
   padding-right: 1.5rem;
 }
 
-/* table - actual chirpy uses .table-wrapper > table
-   fallback added for plain markdown tables in current site */
+.blog-details .content code.highlighter-rouge {
+  font-size: 0.85rem;
+  padding: 3px 5px;
+  overflow-wrap: break-word;
+  border-radius: 6px;
+  background-color: var(--inline-code-bg);
+  color: var(--highlighter-rouge-color);
+}
+
+.blog-details .content code.filepath {
+  background-color: inherit;
+  color: var(--filepath-text-color);
+  font-weight: 600;
+  padding: 0;
+}
+
+.blog-details .content a > code.highlighter-rouge {
+  padding-bottom: 0;
+  color: inherit;
+}
+
+.blog-details .content a:hover > code.highlighter-rouge {
+  border-bottom: none;
+}
+
+.blog-details .content blockquote code {
+  color: inherit;
+}
+
+.blog-details .content code {
+  color: var(--code-color);
+}
+
+.blog-details .content td.rouge-code a {
+  color: inherit !important;
+  border-bottom: none !important;
+  pointer-events: none;
+}
+
+.blog-details .content .table-wrapper {
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+
 .blog-details .content .table-wrapper > table,
 .blog-details .content table {
-  vertical-align: middle;
   min-width: 100%;
   max-width: 100%;
   margin-bottom: 1rem;
   border-collapse: collapse;
+  vertical-align: middle;
 }
 
 .blog-details .content .table-wrapper > table thead th,
@@ -195,12 +198,6 @@
   background-color: var(--tb-odd-bg);
 }
 
-.blog-details .content .table-wrapper {
-  overflow-x: auto;
-  margin-bottom: 1rem;
-}
-
-/* images and captions */
 .blog-details .content img {
   max-width: 100%;
   height: auto;
@@ -208,25 +205,6 @@
 
 .blog-details .content img.shadow {
   border-radius: 10px;
-}
-
-.blog-details .content img + em,
-.blog-details .content .embed-video + em,
-.blog-details .content .embed-audio + em {
-  display: block;
-  text-align: center;
-  font-style: normal;
-  font-size: 80%;
-  padding: 0;
-  color: #6d6c6c;
-}
-
-/* footnotes */
-.blog-details .content sup:target,
-.blog-details .content .footnotes > ol > li:target {
-  background-color: var(--footnote-target-bg);
-  width: fit-content;
-  transition: background-color 1.75s ease-in-out;
 }
 
 .blog-details .content .footnotes {
@@ -241,15 +219,14 @@
   margin-bottom: 0.5rem;
 }
 
-/* kbd */
 .blog-details .content kbd {
   display: inline-block;
-  vertical-align: middle;
-  line-height: 1.3rem;
   min-width: 1.75rem;
   text-align: center;
   margin: 0 0.3rem;
   padding: 0.1rem 0.4rem;
+  line-height: 1.3rem;
+  vertical-align: middle;
   color: var(--kbd-text-color);
   background-color: var(--kbd-bg-color);
   border: 1px solid var(--kbd-wrap-color);
@@ -258,40 +235,13 @@
   box-shadow: inset 0 -1px 0 var(--kbd-wrap-color);
 }
 
-/* hr */
 .blog-details .content hr {
   border-color: var(--main-border-color);
   opacity: 1;
 }
 
-/* list spacing */
-.blog-details .content ul,
-.blog-details .content ol {
-  padding-left: 1.5rem;
-}
-
-.blog-details .content li + li {
-  margin-top: 0.25rem;
-}
-
-/* small muted text blocks used around markdown */
-.blog-details .content em,
-.blog-details .content small {
-  color: var(--text-muted-color);
-}
-
-/* mobile tweak from chirpy */
 @media all and (max-width: 768px) {
   .blog-details .content > p > img {
     max-width: calc(100% + 1rem);
-  }
-}
-
-/* heading offset from chirpy */
-@media all and (min-width: 1200px) {
-  .blog-details .content h2,
-  .blog-details .content h3,
-  .blog-details .content h4 {
-    scroll-margin-top: 2rem;
   }
 }
