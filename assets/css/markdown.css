@@ -1,10 +1,8 @@
-.content h1 {
-  margin-top: 24px;
-  margin-bottom: 0;
-  font-family: Lato, "Microsoft YaHei", sans-serif;
-  font-size: 32px;
-  line-height: 38.4px;
-  font-weight: 400;
-  letter-spacing: 0;
-  color: #2a2a2a;
+@media all and (max-width: 576px) {
+    main .content>blockquote[class^=prompt-] {
+        margin-left: -1rem;
+        margin-right: -1rem;
+        border-radius: 0;
+        max-width: none
+    }
 }
