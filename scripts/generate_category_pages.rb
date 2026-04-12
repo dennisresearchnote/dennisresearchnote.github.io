@@ -92,7 +92,7 @@ category_tree.keys.sort.each do |top|
   category_tree[top].compact.sort.each do |sub|
     sub_page = <<~HTML
       ---
-      layout: category
+      layout: post-list
       title: #{sub}
       category_name: #{top}
       subcategory_name: #{sub}
