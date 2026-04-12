@@ -2428,6 +2428,7 @@ section,
 
 .recent-posts-widget .post-item {
   display: flex;
+  align-items: flex-start;
   margin-bottom: 15px;
 }
 
@@ -2437,6 +2438,7 @@ section,
 
 .recent-posts-widget .post-item img {
   width: 80px;
+  height: auto;
   margin-right: 15px;
 }
 
