@@ -80,7 +80,7 @@ end
 category_tree.keys.sort.each do |top|
   top_page = <<~HTML
     ---
-    layout: category
+    layout: post-list
     title: #{top}
     category_name: #{top}
     permalink: /#{top}/
