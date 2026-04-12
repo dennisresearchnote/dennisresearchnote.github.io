@@ -75,10 +75,8 @@ body_class: blog-details-page
             </div><!-- End meta top -->
 
             <div class="content">
-              <div class="markdown-body">
                 {% capture _content %}{{ content }}{% endcapture %}
                 {% include refactor-content.html content=_content %}
-              </div>
             </div><!-- End post content -->
 
             {% if page.categories or page.tags %}
