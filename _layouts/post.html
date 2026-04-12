@@ -11,10 +11,13 @@ body_class: blog-details-page
       <ol>
         <li><a href="{{ '/' | relative_url }}">Home</a></li>
         {% if page.categories and page.categories.size > 0 %}
-          <li><a href="{{ '/' | append: page.categories[0] | append: '/' | relative_url }}">{{ page.categories[0] }}</a></li>
+        <li><a href="{{ '/' | append: page.categories[0] | append: '/' | relative_url }}">{{ page.categories[0] }}</a>
+        </li>
         {% endif %}
         {% if page.categories and page.categories.size > 1 %}
-          <li><a href="{{ '/' | append: page.categories[0] | append: '/' | append: page.categories[1] | append: '/' | relative_url }}">{{ page.categories[1] }}</a></li>
+        <li><a
+            href="{{ '/' | append: page.categories[0] | append: '/' | append: page.categories[1] | append: '/' | relative_url }}">{{
+            page.categories[1] }}</a></li>
         {% endif %}
         <li class="current">{{ page.title }}</li>
       </ol>
@@ -36,9 +39,10 @@ body_class: blog-details-page
             {% if page.image %}
             <div class="post-img">
               {% if page.image.path %}
-                <img src="{{ page.image.path | relative_url }}" alt="{{ page.image.alt | default: page.title }}" class="img-fluid">
+              <img src="{{ page.image.path | relative_url }}" alt="{{ page.image.alt | default: page.title }}"
+                class="img-fluid">
               {% else %}
-                <img src="{{ page.image | relative_url }}" alt="{{ page.title }}" class="img-fluid">
+              <img src="{{ page.image | relative_url }}" alt="{{ page.title }}" class="img-fluid">
               {% endif %}
             </div>
             {% endif %}
@@ -71,7 +75,10 @@ body_class: blog-details-page
             </div><!-- End meta top -->
 
             <div class="content">
-              {{ content }}
+              <div class="markdown-body">
+                {% capture _content %}{{ content }}{% endcapture %}
+                {% include chirpy/refactor-content.html content=_content %}
+              </div>
             </div><!-- End post content -->
 
             {% if page.categories or page.tags %}
@@ -88,7 +95,8 @@ body_class: blog-details-page
                 {% endif %}
                 {% if page.categories.size > 1 %}
                 <li>
-                  <a href="{{ '/' | append: page.categories[0] | append: '/' | append: page.categories[1] | append: '/' | relative_url }}">
+                  <a
+                    href="{{ '/' | append: page.categories[0] | append: '/' | append: page.categories[1] | append: '/' | relative_url }}">
                     {{ page.categories[1] }}
                   </a>
                 </li>
@@ -149,11 +157,11 @@ body_class: blog-details-page
           {% for post in site.posts limit:5 %}
           <div class="post-item">
             {% if post.image %}
-              {% if post.image.path %}
-                <img src="{{ post.image.path | relative_url }}" alt="{{ post.title }}" class="flex-shrink-0">
-              {% else %}
-                <img src="{{ post.image | relative_url }}" alt="{{ post.title }}" class="flex-shrink-0">
-              {% endif %}
+            {% if post.image.path %}
+            <img src="{{ post.image.path | relative_url }}" alt="{{ post.title }}" class="flex-shrink-0">
+            {% else %}
+            <img src="{{ post.image | relative_url }}" alt="{{ post.title }}" class="flex-shrink-0">
+            {% endif %}
             {% endif %}
             <div>
               <h4><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h4>
