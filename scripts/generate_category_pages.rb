@@ -38,35 +38,9 @@ def write_page(path, content)
   File.write(path, content, mode: "w", encoding: "utf-8")
 end
 
-def build_page_content(top:, sub:, page_num:, total_pages:, total_posts:)
-  title = sub || top
-  base_permalink = sub ? "/#{top}/#{sub}/" : "/#{top}/"
-  permalink = page_num == 1 ? base_permalink : "#{base_permalink}page/#{page_num}/"
-
-  lines = []
-  lines << "---"
-  lines << "layout: post-list"
-  lines << "title: #{title}"
-  lines << "category_name: #{top}"
-  lines << "subcategory_name: #{sub}" if sub && !sub.empty?
-  lines << "permalink: #{permalink}"
-  lines << "page_num: #{page_num}"
-  lines << "total_pages: #{total_pages}"
-  lines << "total_posts: #{total_posts}"
-  lines << "per_page: #{PER_PAGE}"
-  lines << "paginate_base: #{base_permalink}"
-  lines << "---"
-  lines << ""
-
-  lines.join("\n")
-end
-
 # blog/index.html은 건드리지 않음
-# 자동 생성 대상은
-# - blog/<top>/index.html
-# - blog/<top>/page/<n>/index.html
-# - blog/<top>/<sub>/index.html
-# - blog/<top>/<sub>/page/<n>/index.html
+# 자동 생성 대상은 blog/<top>/index.html, blog/<top>/<sub>/index.html
+# + 페이지네이션용 blog/<top>/page/N/index.html, blog/<top>/<sub>/page/N/index.html
 # 기존 자동 생성 결과만 정리
 Dir.glob(File.join(CATEGORY_ROOT, "*", "index.html")).each do |path|
   File.delete(path) if File.file?(path)
@@ -119,48 +93,75 @@ end
 
 category_tree.keys.sort.each do |top|
   top_total_posts = post_counts[[top, nil]]
-  top_total_pages = [(top_total_posts.to_f / PER_PAGE).ceil, 1].max
+  top_total_pages = (top_total_posts.to_f / PER_PAGE).ceil
+  top_total_pages = 1 if top_total_pages < 1
 
   (1..top_total_pages).each do |page_num|
-    top_page = build_page_content(
-      top: top,
-      sub: nil,
-      page_num: page_num,
-      total_pages: top_total_pages,
-      total_posts: top_total_posts
-    )
+    permalink =
+      if page_num == 1
+        "/#{top}/"
+      else
+        "/#{top}/page/#{page_num}/"
+      end
 
-    top_path =
+    top_page = <<~HTML
+      ---
+      layout: post-list
+      title: #{top}
+      category_name: #{top}
+      permalink: #{permalink}
+      page_num: #{page_num}
+      total_pages: #{top_total_pages}
+      per_page: #{PER_PAGE}
+      paginate_base: /#{top}/
+      ---
+    HTML
+
+    output_path =
       if page_num == 1
         File.join(CATEGORY_ROOT, top, "index.html")
       else
         File.join(CATEGORY_ROOT, top, "page", page_num.to_s, "index.html")
       end
 
-    write_page(top_path, top_page)
+    write_page(output_path, top_page)
   end
 
   category_tree[top].compact.sort.each do |sub|
     sub_total_posts = post_counts[[top, sub]]
-    sub_total_pages = [(sub_total_posts.to_f / PER_PAGE).ceil, 1].max
+    sub_total_pages = (sub_total_posts.to_f / PER_PAGE).ceil
+    sub_total_pages = 1 if sub_total_pages < 1
 
     (1..sub_total_pages).each do |page_num|
-      sub_page = build_page_content(
-        top: top,
-        sub: sub,
-        page_num: page_num,
-        total_pages: sub_total_pages,
-        total_posts: sub_total_posts
-      )
+      permalink =
+        if page_num == 1
+          "/#{top}/#{sub}/"
+        else
+          "/#{top}/#{sub}/page/#{page_num}/"
+        end
 
-      sub_path =
+      sub_page = <<~HTML
+        ---
+        layout: post-list
+        title: #{sub}
+        category_name: #{top}
+        subcategory_name: #{sub}
+        permalink: #{permalink}
+        page_num: #{page_num}
+        total_pages: #{sub_total_pages}
+        per_page: #{PER_PAGE}
+        paginate_base: /#{top}/#{sub}/
+        ---
+      HTML
+
+      output_path =
         if page_num == 1
           File.join(CATEGORY_ROOT, top, sub, "index.html")
         else
           File.join(CATEGORY_ROOT, top, sub, "page", page_num.to_s, "index.html")
         end
 
-      write_page(sub_path, sub_page)
+      write_page(output_path, sub_page)
     end
   end
 end
@@ -170,7 +171,9 @@ category_tree.keys.sort.each do |top|
   puts "  /#{top}/"
 
   top_total_posts = post_counts[[top, nil]]
-  top_total_pages = [(top_total_posts.to_f / PER_PAGE).ceil, 1].max
+  top_total_pages = (top_total_posts.to_f / PER_PAGE).ceil
+  top_total_pages = 1 if top_total_pages < 1
+
   if top_total_pages > 1
     (2..top_total_pages).each do |page_num|
       puts "  /#{top}/page/#{page_num}/"
@@ -181,7 +184,9 @@ category_tree.keys.sort.each do |top|
     puts "  /#{top}/#{sub}/"
 
     sub_total_posts = post_counts[[top, sub]]
-    sub_total_pages = [(sub_total_posts.to_f / PER_PAGE).ceil, 1].max
+    sub_total_pages = (sub_total_posts.to_f / PER_PAGE).ceil
+    sub_total_pages = 1 if sub_total_pages < 1
+
     if sub_total_pages > 1
       (2..sub_total_pages).each do |page_num|
         puts "  /#{top}/#{sub}/page/#{page_num}/"

@@ -33,6 +33,10 @@ body_class: blog-page
         <div class="container">
           <div class="row gy-4">
 
+            {% assign current_page = page.page_num | default: 1 %}
+            {% assign per_page = page.per_page | default: 5 %}
+            {% assign start_index = current_page | minus: 1 | times: per_page %}
+            {% assign end_index = start_index | plus: per_page | minus: 1 %}
             {% assign matched_count = 0 %}
 
             {% for post in site.posts %}
@@ -49,60 +53,63 @@ body_class: blog-page
               {% endif %}
 
               {% if match %}
-                {% assign matched_count = matched_count | plus: 1 %}
-                <div class="col-lg-12">
-                  <article>
+                {% if matched_count >= start_index and matched_count <= end_index %}
+                  <div class="col-lg-12">
+                    <article>
 
-                    {% if post.image %}
-                    <div class="post-img">
-                      {% if post.image.path %}
-                        <img src="{{ post.image.path | relative_url }}" alt="{{ post.image.alt | default: post.title }}" class="img-fluid">
-                      {% else %}
-                        <img src="{{ post.image | relative_url }}" alt="{{ post.title }}" class="img-fluid">
-                      {% endif %}
-                    </div>
-                    {% endif %}
-
-                    <h2 class="title">
-                      <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
-                    </h2>
-
-                    <div class="meta-top">
-                      <ul>
-                        {% if post.author %}
-                        <li class="d-flex align-items-center">
-                          <i class="bi bi-person"></i>
-                          <span>{{ post.author }}</span>
-                        </li>
-                        {% endif %}
-
-                        {% if post.date %}
-                        <li class="d-flex align-items-center">
-                          <i class="bi bi-clock"></i>
-                          <a href="{{ post.url | relative_url }}">
-                            <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %-d, %Y" }}</time>
-                          </a>
-                        </li>
-                        {% endif %}
-                      </ul>
-                    </div>
-
-                    <div class="content">
-                      <p>
-                        {% if post.excerpt %}
-                          {{ post.excerpt | strip_html | truncate: 220 }}
+                      {% if post.image %}
+                      <div class="post-img">
+                        {% if post.image.path %}
+                          <img src="{{ post.image.path | relative_url }}" alt="{{ post.image.alt | default: post.title }}" class="img-fluid">
                         {% else %}
-                          {{ post.content | strip_html | truncate: 220 }}
+                          <img src="{{ post.image | relative_url }}" alt="{{ post.title }}" class="img-fluid">
                         {% endif %}
-                      </p>
-
-                      <div class="read-more">
-                        <a href="{{ post.url | relative_url }}">Read More</a>
                       </div>
-                    </div>
+                      {% endif %}
 
-                  </article>
-                </div>
+                      <h2 class="title">
+                        <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+                      </h2>
+
+                      <div class="meta-top">
+                        <ul>
+                          {% if post.author %}
+                          <li class="d-flex align-items-center">
+                            <i class="bi bi-person"></i>
+                            <span>{{ post.author }}</span>
+                          </li>
+                          {% endif %}
+
+                          {% if post.date %}
+                          <li class="d-flex align-items-center">
+                            <i class="bi bi-clock"></i>
+                            <a href="{{ post.url | relative_url }}">
+                              <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %-d, %Y" }}</time>
+                            </a>
+                          </li>
+                          {% endif %}
+                        </ul>
+                      </div>
+
+                      <div class="content">
+                        <p>
+                          {% if post.excerpt %}
+                            {{ post.excerpt | strip_html | truncate: 220 }}
+                          {% else %}
+                            {{ post.content | strip_html | truncate: 220 }}
+                          {% endif %}
+                        </p>
+
+                        <div class="read-more">
+                          <a href="{{ post.url | relative_url }}">Read More</a>
+                        </div>
+                      </div>
+
+                    </article>
+                  </div>
+                {% endif %}
+
+                {% assign matched_count = matched_count | plus: 1 %}
               {% endif %}
             {% endfor %}
 
@@ -117,24 +124,96 @@ body_class: blog-page
           </div>
         </div>
       </section>
+
+      {% assign total_pages = page.total_pages | default: 1 %}
+
+      {% if total_pages > 1 %}
       <section id="blog-pagination" class="blog-pagination section">
+        <div class="container">
+          <div class="d-flex justify-content-center">
+            <ul>
+              {% assign base_url = page.paginate_base | default: page.url %}
 
-            <div class="container">
-              <div class="d-flex justify-content-center">
-                <ul>
-                  <li><a href="#"><i class="bi bi-chevron-left"></i></a></li>
-                  <li><a href="#" class="active">1</a></li>
-                  <li><a href="#">2</a></li>
-                  <li><a href="#">3</a></li>
-                  <li><a href="#">4</a></li>
-                  <li>...</li>
-                  <li><a href="#">10</a></li>
-                  <li><a href="#"><i class="bi bi-chevron-right"></i></a></li>
-                </ul>
-              </div>
-            </div>
+              {% if current_page > 1 %}
+                {% assign prev_page = current_page | minus: 1 %}
+                {% if prev_page == 1 %}
+                  {% assign prev_url = base_url | relative_url %}
+                {% else %}
+                  {% assign prev_url = base_url | append: 'page/' | append: prev_page | append: '/' | relative_url %}
+                {% endif %}
+              {% else %}
+                {% assign prev_url = '#' %}
+              {% endif %}
 
-          </section><!-- /Blog Pagination Section -->
+              <li>
+                <a href="{{ prev_url }}">
+                  <i class="bi bi-chevron-left"></i>
+                </a>
+              </li>
+
+              {% assign left_ellipsis = false %}
+              {% assign right_ellipsis = false %}
+
+              {% for i in (1..total_pages) %}
+                {% assign pre = current_page | minus: 1 %}
+                {% assign next = current_page | plus: 1 %}
+                {% assign pre_less = pre | minus: 1 %}
+                {% assign show = false %}
+
+                {% if current_page == 1 %}
+                  {% if i <= 3 or i == total_pages %}
+                    {% assign show = true %}
+                  {% endif %}
+                {% elsif current_page == total_pages %}
+                  {% if i == 1 or i >= pre_less %}
+                    {% assign show = true %}
+                  {% endif %}
+                {% else %}
+                  {% if i == 1 or i == total_pages %}
+                    {% assign show = true %}
+                  {% elsif i >= pre and i <= next %}
+                    {% assign show = true %}
+                  {% endif %}
+                {% endif %}
+
+                {% if show %}
+                  {% if i == 1 %}
+                    {% assign page_url = base_url | relative_url %}
+                  {% else %}
+                    {% assign page_url = base_url | append: 'page/' | append: i | append: '/' | relative_url %}
+                  {% endif %}
+
+                  <li>
+                    <a href="{{ page_url }}"{% if i == current_page %} class="active"{% endif %}>{{ i }}</a>
+                  </li>
+                {% else %}
+                  {% if i < pre and left_ellipsis == false %}
+                    <li>...</li>
+                    {% assign left_ellipsis = true %}
+                  {% elsif i > next and right_ellipsis == false %}
+                    <li>...</li>
+                    {% assign right_ellipsis = true %}
+                  {% endif %}
+                {% endif %}
+              {% endfor %}
+
+              {% if current_page < total_pages %}
+                {% assign next_page = current_page | plus: 1 %}
+                {% assign next_url = base_url | append: 'page/' | append: next_page | append: '/' | relative_url %}
+              {% else %}
+                {% assign next_url = '#' %}
+              {% endif %}
+
+              <li>
+                <a href="{{ next_url }}">
+                  <i class="bi bi-chevron-right"></i>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+      {% endif %}
 
     </div>
 
