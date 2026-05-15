@@ -22,7 +22,7 @@ image:
 - 이러한 기능들은 보통 사용자와의 상호작용이 필요한 웹사이트의 일부
 
 # 웹사이트 탐색
-{: .mt-4 .mb-0 }
+
 | Feature | URL | Summary |
 |:---|:---|:---|
 | Home Page | `/` | This page contains a summary of what Acme IT Support does with a company photo of their staff. |
