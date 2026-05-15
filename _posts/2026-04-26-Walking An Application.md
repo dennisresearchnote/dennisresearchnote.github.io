@@ -36,6 +36,7 @@ image:
 웹사이트의 상호작용 요소를 찾는 방법은 로그인 폼을 발견하는 것처럼 간단할 수도 있고, 웹사이트의 JavaScript를 수동으로 분석하는 방식일 수도 있습니다. 가장 좋은 시작 방법 중 하나는 브라우저만 사용하여 웹사이트를 직접 탐색하면서, 각 페이지·영역·기능을 정리하고 간단한 요약을 기록하는 것입니다.
 
 예를 들어, Acme IT Support 웹사이트를 검토했다면 사이트 리뷰는 다음과 같은 형태가 될 수 있습니다:
+
 | Feature | URL | Summary |
 |:---|:---|:---|
 | Home Page | `/` | This page contains a summary of what Acme IT Support does with a company photo of their staff. |
