@@ -28,7 +28,8 @@ image:
 |  Home Pagee          | /     | This page contains a summary of what Acme IT Support does with a company photo of their staff. |
 | Island Trading               | Helen Bennett    |      UK |
 | Magazzini Alimentari Riuniti | Giovanni Rovelli |   Italy |
-|  |  |  |
+
+
 |:---|:---|---:|
 | | `` |  |
 | Latest News | `/news` | This page contains a list of recently published news articles by the company, and each news article has a link with an ID number, e.g. `/news/article?id=1`. |
