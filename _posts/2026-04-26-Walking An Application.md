@@ -24,7 +24,7 @@ image:
 # 웹사이트 탐색
 {: .mt-4 .mb-0 }
 | Feature | URL | Summary |
-|:---|:---|:---|
+|:---|:---|---:|
 | Home Page | `/` | This page contains a summary of what Acme IT Support does with a company photo of their staff. |
 | Latest News | `/news` | This page contains a list of recently published news articles by the company, and each news article has a link with an ID number, e.g. `/news/article?id=1`. |
 | News Article | `/news/article?id=1` | Displays the individual news article. Some articles seem to be blocked and reserved for premium customers only. |
