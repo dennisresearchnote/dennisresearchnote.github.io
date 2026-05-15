@@ -63,9 +63,7 @@ image:
 
 1. 웹사이트를 보고 있는 동안 페이지를 우클릭하면 메뉴에서 “View Page Source(페이지 소스 보기)” 옵션을 볼 수 있습니다.
 
-2. 대부분의 브라우저는 URL 앞에 view-source: 를 붙이는 방법도 지원합니다. 예를 들어:
-
-view-source:https://www.google.com/
+2. 대부분의 브라우저는 URL 앞에 view-source: 를 붙이는 방법도 지원합니다. 예를 들어: view-source:https://www.google.com/
 
 3. 브라우저 메뉴에서도 페이지 소스를 보는 옵션을 찾을 수 있습니다. 이 옵션은 경우에 따라 개발자 도구(Developer Tools)나 More Tools 같은 하위 메뉴 안에 있을 수 있습니다.
 
